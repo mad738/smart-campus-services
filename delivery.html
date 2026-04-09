@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Dashboard - Smart Campus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .task-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .task-id {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .task-type {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-food { background: rgba(245, 118, 118, 0.15); color: #f57676; border: 1px solid rgba(245, 118, 118, 0.3); }
+        .type-xerox { background: rgba(118, 186, 245, 0.15); color: #76baf5; border: 1px solid rgba(118, 186, 245, 0.3); }
+
+        .task-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .route-info {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 5px;
+        }
+
+        .route-path {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .pin-section {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pin-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pin-digit {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .pin-digit:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .agent-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <header class="navbar">
+        <div class="logo">
+            <i data-feather="truck" class="text-primary"></i>
+            <span>Delivery Agent</span>
+        </div>
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Sam+Agent&background=10b981&color=fff" alt="Agent Profile">
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Agent Stats -->
+        <div class="agent-stats">
+            <div class="stat-box glass-panel">
+                <span class="stat-num">08</span>
+                <span class="stat-label">Tasks Done</span>
+            </div>
+            <div class="stat-box glass-panel">
+                <span class="stat-num">₹145</span>
+                <span class="stat-label">Earnings</span>
+            </div>
+            <div class="stat-box glass-panel">
+                <span class="stat-num">4.9</span>
+                <span class="stat-label">Rating</span>
+            </div>
+        </div>
+
+        <h2 class="section-title">Available Tasks</h2>
+        
+        <div class="task-list">
+            <!-- Task Item 1 -->
+            <div class="task-card glass-panel" id="task-8912">
+                <div class="task-header">
+                    <span class="task-id">#SC-8912</span>
+                    <span class="task-type type-food">Food Order</span>
+                </div>
+                <div class="task-info">
+                    <div class="info-item">
+                        <span class="info-label">Pickup</span>
+                        <span class="info-value">Canteen (Main)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Earings</span>
+                        <span class="info-value">₹15.00</span>
+                    </div>
+                </div>
+                <div class="route-info">
+                    <div class="route-path">
+                        <i data-feather="map-pin" style="width:14px; color: #ef4444;"></i>
+                        <span>Block C, 4th Floor, R-402</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="claimTask('8912')">Claim Task</button>
+                
+                <div class="pin-section" id="pin-8912">
+                    <span class="info-label">Enter User 4-Digit PIN</span>
+                    <div class="pin-input-group">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                    </div>
+                    <button class="btn btn-secondary" style="margin-top: 15px; width: 100%;" onclick="verifyCompletion('8912')">Verify & Close Task</button>
+                </div>
+            </div>
+
+            <!-- Task Item 2 -->
+            <div class="task-card glass-panel" id="task-8915">
+                <div class="task-header">
+                    <span class="task-id">#SC-8915</span>
+                    <span class="task-type type-xerox">Xerox Job</span>
+                </div>
+                <div class="task-info">
+                    <div class="info-item">
+                        <span class="info-label">Pickup</span>
+                        <span class="info-value">Xerox Center (Library)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Earings</span>
+                        <span class="info-value">₹12.00</span>
+                    </div>
+                </div>
+                <div class="route-info">
+                    <div class="route-path">
+                        <i data-feather="map-pin" style="width:14px; color: #ef4444;"></i>
+                        <span>Girls Hostel, G-Floor, Lobby</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="claimTask('8915')">Claim Task</button>
+                
+                <div class="pin-section" id="pin-8915">
+                    <span class="info-label">Enter User 4-Digit PIN</span>
+                    <div class="pin-input-group">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                        <input type="text" maxlength="1" class="pin-digit">
+                    </div>
+                    <button class="btn btn-secondary" style="margin-top: 15px; width: 100%;" onclick="verifyCompletion('8915')">Verify & Close Task</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+
+        function claimTask(id) {
+            const btn = document.querySelector(`#task-${id} .btn-primary`);
+            btn.innerHTML = '<i data-feather="check"></i> Task Claimed';
+            btn.style.backgroundColor = '#10b981';
+            btn.disabled = true;
+            
+            // Show PIN section
+            document.getElementById(`pin-${id}`).style.display = 'block';
+            feather.replace();
+        }
+
+        function verifyCompletion(id) {
+            alert(`Task ${id} has been marked as Completed!`);
+            document.getElementById(`task-${id}`).style.opacity = '0.5';
+            document.getElementById(`task-${id}`).style.pointerEvents = 'none';
+        }
+
+        // Auto focus next pin digit
+        document.querySelectorAll('.pin-digit').forEach((input, idx, inputs) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && idx < inputs.length - 1) {
+                    inputs[idx + 1].focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

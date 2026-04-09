@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerox Center - Smart Campus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .xerox-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .xerox-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Drag & Drop Zone */
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            background-color: rgba(44, 44, 46, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(164, 118, 245, 0.05);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .upload-zone h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .upload-zone p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Print Settings Sidebar */
+        .settings-panel {
+            padding: 30px;
+        }
+
+        .settings-panel h3 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d1d5db;
+        }
+
+        .form-control {
+            width: 100%;
+            background-color: #1e1e24;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .summary-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #9ca3af;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        /* File Uploaded State hidden by default */
+        .file-uploaded-state {
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .file-item-icon {
+            color: #ef4444; /* red for pdf */
+        }
+        
+        .file-item-details { flex-grow: 1; }
+        .file-item h4 { margin-bottom: 5px; }
+        .file-item p { color: var(--text-muted); font-size: 13px; }
+    </style>
+</head>
+<body class="dashboard-body">
+    <!-- Header -->
+    <header class="navbar">
+        <div class="logo cursor-pointer" onclick="window.location.href='home.html'">
+            <i data-feather="hexagon" class="text-primary"></i>
+            <span>SmartCampus</span>
+        </div>
+        <div class="nav-actions">
+            <button class="icon-btn" onclick="window.location.href='checkout.html'">
+                <i data-feather="shopping-cart"></i>
+            </button>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Alex+Student&background=a476f5&color=fff" alt="User Profile">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1 class="gradient-text">Xerox Center</h1>
+        <p style="color: #a1a1aa; margin-top: 5px;">Upload PDFs, Select Printing Options.</p>
+
+        <div class="xerox-layout">
+            <!-- Step 1: Upload Zone -->
+            <div class="upload-zone" id="drop-zone" onclick="simulateUpload()">
+                <div id="upload-prompt">
+                    <i data-feather="upload-cloud" class="upload-icon"></i>
+                    <h3>Drag & Drop Files Here</h3>
+                    <p>Supported Formats: PDF, DOCX (Max 20MB)</p>
+                    <button class="btn btn-outline" type="button">Browse Files</button>
+                </div>
+                
+                <div class="file-uploaded-state" id="file-state">
+                    <div class="file-item">
+                        <i data-feather="file-text" class="file-item-icon" style="width: 32px; height: 32px;"></i>
+                        <div class="file-item-details" style="flex-grow: 1;">
+                            <h4>Assignment_Final_Draft.pdf</h4>
+                            <p>12 pages • 2.4 MB</p>
+                        </div>
+                        <i data-feather="check-circle" style="color: #10b981;"></i>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); resetUpload()">Remove File</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Settings -->
+            <div class="settings-panel glass-panel">
+                <h3>Print Settings</h3>
+                
+                <div class="form-group">
+                    <label>Color Mode</label>
+                    <select class="form-control">
+                        <option>Black & White (₹0.10/pg)</option>
+                        <option>Color (₹0.50/pg)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="padding: 10px 0;">
+                    <label class="checkbox-group">
+                        <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--primary-color);">
+                        Double-sided Printing
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Copies</label>
+                    <input type="number" class="form-control" value="1" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label>Binding</label>
+                    <select class="form-control">
+                        <option>None</option>
+                        <option>Spiral Binding (+₹2.00)</option>
+                        <option>Staple (Top Left)</option>
+                    </select>
+                </div>
+
+                <!-- Step 3: Summary -->
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Total Pages:</span>
+                        <span>12</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Cost per page:</span>
+                        <span>₹0.10</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Estimated Cost</span>
+                        <span class="text-primary">₹1.20</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='checkout.html'">
+                    Pay & Add to Queue
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        function simulateUpload() {
+            document.getElementById('upload-prompt').style.display = 'none';
+            document.getElementById('file-state').style.display = 'block';
+            document.getElementById('drop-zone').style.borderStyle = 'solid';
+            document.getElementById('drop-zone').style.borderColor = 'rgba(255,255,255,0.1)';
+        }
+        
+        function resetUpload() {
+            document.getElementById('upload-prompt').style.display = 'block';
+            document.getElementById('file-state').style.display = 'none';
+            document.getElementById('drop-zone').style.borderStyle = 'dashed';
+        }
+    </script>
+</body>
+</html>

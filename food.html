@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Stalls - Smart Campus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="food.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="dashboard-body">
+    <!-- Header -->
+    <header class="navbar">
+        <div class="logo cursor-pointer" onclick="window.location.href='home.html'">
+            <i data-feather="hexagon" class="text-primary"></i>
+            <span>SmartCampus</span>
+        </div>
+        <div class="search-bar">
+            <i data-feather="search"></i>
+            <input type="text" placeholder="Search burgers, drinks...">
+        </div>
+        <div class="nav-actions">
+            <button class="icon-btn" onclick="window.location.href='checkout.html'">
+                <i data-feather="shopping-cart"></i>
+                <span class="badge">1</span>
+            </button>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Alex+Student&background=a476f5&color=fff" alt="User Profile">
+            </div>
+        </div>
+    </header>
+
+    <main class="page-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-header">
+                <h3>Categories</h3>
+            </div>
+            <ul class="cat-list">
+                <li class="active">
+                    <i data-feather="star"></i> Popular
+                </li>
+                <li>
+                    <i data-feather="coffee"></i> Beverages
+                </li>
+                <li>
+                    <i data-feather="box"></i> Meals
+                </li>
+                <li>
+                    <i data-feather="circle"></i> Snacks
+                </li>
+                <li>
+                    <i data-feather="sun"></i> Breakfast
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <section class="main-content">
+            <div class="page-header">
+                <h1 class="gradient-text">Food Stalls</h1>
+                <p>Order from the main canteen.</p>
+            </div>
+
+            <div class="food-grid">
+                <!-- Card 1 -->
+                <div class="food-card">
+                    <div class="food-img" style="background-image: url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80')">
+                        <span class="stock-badge in-stock">Available</span>
+                    </div>
+                    <div class="food-info">
+                        <h3>Classic Cheeseburger</h3>
+                        <p class="price">₹4.50</p>
+                        <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(this)">
+                            <i data-feather="plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="food-card">
+                    <div class="food-img" style="background-image: url('https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80')">
+                        <span class="stock-badge in-stock">Available</span>
+                    </div>
+                    <div class="food-info">
+                        <h3>Chicken Nuggets (10pc)</h3>
+                        <p class="price">₹5.00</p>
+                        <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(this)">
+                            <i data-feather="plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="food-card">
+                    <div class="food-img" style="background-image: url('https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80')">
+                        <span class="stock-badge out-stock">Out of Stock</span>
+                    </div>
+                    <div class="food-info">
+                        <h3 class="disabled-text">Cold Brew Coffee</h3>
+                        <p class="price disabled-text">₹3.00</p>
+                        <button class="btn btn-secondary" disabled>
+                            Sold Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="food-card">
+                    <div class="food-img" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80')">
+                        <span class="stock-badge in-stock">Available</span>
+                    </div>
+                    <div class="food-info">
+                        <h3>Margherita Pizza</h3>
+                        <p class="price">₹7.50</p>
+                        <button class="btn btn-primary add-to-cart-btn" onclick="addToCart(this)">
+                            <i data-feather="plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating Cart (visible only on mobile or as sticky footer) -->
+        <div class="floating-cart glass-panel" onclick="window.location.href='checkout.html'">
+            <div class="cart-left">
+                <div class="cart-icon-wrapper">
+                    <i data-feather="shopping-bag"></i>
+                    <span class="cart-count">1</span>
+                </div>
+                <div>
+                    <span class="cart-total">₹4.50</span>
+                </div>
+            </div>
+            <button class="btn btn-primary">Checkout <i data-feather="chevron-right"></i></button>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        function addToCart(btn) {
+            btn.innerHTML = '<i data-feather="check"></i> Added';
+            btn.classList.add('added');
+            feather.replace();
+            
+            setTimeout(() => {
+                btn.innerHTML = '<i data-feather="plus"></i> Add to Cart';
+                btn.classList.remove('added');
+                feather.replace();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
