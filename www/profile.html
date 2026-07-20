@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Smart Campus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .profile-card {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .profile-image-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 10px 30px rgba(164, 118, 245, 0.4);
+        }
+        .profile-details h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .profile-details p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        .logout-btn-large {
+            margin-top: 20px;
+            background: rgba(245, 118, 118, 0.1);
+            color: #f57676;
+            border: 1px solid rgba(245, 118, 118, 0.3);
+        }
+        .logout-btn-large:hover {
+            background: rgba(245, 118, 118, 0.2);
+            color: #f57676;
+            box-shadow: none;
+            border-color: #f57676;
+        }
+    </style>
+</head>
+<body class="dashboard-body" style="padding-top: 40px;">
+
+    <div class="container profile-container" style="position: relative;">
+        <!-- Back Arrow -->
+        <button class="icon-btn" style="position: absolute; left: 20px; top: 35px; background: rgba(255,255,255,0.05);" onclick="window.location.href='home.html'" title="Back to Dashboard">
+            <i data-feather="arrow-left"></i>
+        </button>
+
+        <h1 class="section-title text-center" style="text-align: center; margin-bottom: 30px;">My Profile</h1>
+        
+        <div class="glass-panel profile-card">
+            <img src="" alt="Profile Picture" id="large-profile-img" class="profile-image-large" style="display: none;">
+            <div class="profile-details">
+                <h2 id="profile-name">Loading...</h2>
+                <p id="profile-email">Please wait</p>
+                <div style="margin-top: 10px;">
+                    <span id="profile-role" class="role-badge" style="font-size: 14px; padding: 6px 16px;">User</span>
+                </div>
+            </div>
+            
+            <hr style="width: 100%; border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+            
+            <button id="page-logout-btn" class="btn logout-btn-large">
+                <i data-feather="log-out"></i> Sign Out
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Logout Modal -->
+    <div id="logout-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; align-items: center; justify-content: center;">
+        <div class="glass-panel" style="width: 90%; max-width: 380px; padding: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+            <div style="margin-bottom: 20px; display: flex; justify-content: center;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(245, 118, 118, 0.1); border: 1px solid rgba(245, 118, 118, 0.2); display: flex; align-items: center; justify-content: center;">
+                    <i data-feather="log-out" style="color: #f57676; width: 32px; height: 32px;"></i>
+                </div>
+            </div>
+            <h3 style="font-size: 24px; margin-bottom: 10px; font-weight: 700;">Sign Out?</h3>
+            <p style="color: #a1a1aa; margin-bottom: 30px; line-height: 1.6;">Are you sure you want to sign out of <br><span id="modal-email-span" style="color: #e4e4e7; font-weight: 600;"></span>?</p>
+            <div style="display: flex; gap: 15px;">
+                <button id="modal-cancel-btn" class="btn btn-outline" style="flex: 1; padding: 14px; border-radius: 12px;">Cancel</button>
+                <button id="modal-confirm-btn" class="btn" style="flex: 1; padding: 14px; border-radius: 12px; background: #f57676; border-color: #f57676; color: #fff; box-shadow: 0 5px 15px rgba(245, 118, 118, 0.3);">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>feather.replace();</script>
+    <script type="module">
+        import { auth, db, doc, getDoc, onAuthStateChanged, signOut } from "./firebase-init.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImg = document.getElementById('large-profile-img');
+            const profileName = document.getElementById('profile-name');
+            const profileEmail = document.getElementById('profile-email');
+            const profileRole = document.getElementById('profile-role');
+            const logoutBtn = document.getElementById('page-logout-btn');
+            
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const photoUrl = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=a476f5&color=fff&size=256`;
+                    profileImg.src = photoUrl;
+                    profileImg.style.display = 'block';
+                    
+                    profileName.textContent = user.displayName || "User";
+                    profileEmail.textContent = user.email;
+
+                    try {
+                        const userSnap = await getDoc(doc(db, 'users', user.uid));
+                        if (userSnap.exists()) {
+                            profileRole.textContent = userSnap.data().role;
+                        }
+                    } catch (err) {
+                        console.error("Error fetching role:", err);
+                    }
+                    
+                    logoutBtn.addEventListener('click', () => {
+                        const modal = document.getElementById('logout-modal');
+                        document.getElementById('modal-email-span').textContent = user.email;
+                        modal.style.display = 'flex';
+                        if (typeof feather !== 'undefined') feather.replace();
+                    });
+
+                    document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+                        document.getElementById('logout-modal').style.display = 'none';
+                    });
+
+                    document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+                        signOut(auth).then(() => {
+                            window.location.href = 'index.html';
+                        });
+                    });
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

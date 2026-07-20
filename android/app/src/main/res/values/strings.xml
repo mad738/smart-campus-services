@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SmartCampus</string>
+    <string name="title_activity_main">SmartCampus</string>
+    <string name="package_name">com.mad738.smartcampus</string>
+    <string name="custom_url_scheme">com.mad738.smartcampus</string>
+</resources>
