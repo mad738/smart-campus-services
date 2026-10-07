@@ -1,28 +1,30 @@
 /* Layout */
 .page-layout {
     display: flex;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-    gap: 30px;
+    padding: 16px 20px;
+    gap: 20px;
 }
 
 @media (max-width: 900px) {
     .page-layout {
         flex-direction: column;
+        padding: 12px 16px;
     }
 }
 
 /* Sidebar */
 .sidebar {
-    width: 250px;
+    width: 220px;
     flex-shrink: 0;
-    padding: 24px;
-    height: calc(100vh - 120px);
+    padding: 16px;
+    height: calc(100vh - 100px);
     position: sticky;
-    top: 100px;
+    top: 80px;
     display: flex;
     flex-direction: column;
+    border-radius: 14px;
 }
 
 @media (max-width: 900px) {
@@ -31,44 +33,45 @@
         height: auto;
         position: relative;
         top: 0;
-        padding: 15px;
-        margin-bottom: 20px;
+        padding: 12px;
+        margin-bottom: 12px;
     }
 }
 
 .sidebar-header h3 {
-    font-size: 18px;
-    margin-bottom: 20px;
+    font-size: 13px;
+    margin-bottom: 12px;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
 .cat-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 @media (max-width: 900px) {
     .cat-list {
         flex-direction: row;
         overflow-x: auto;
-        padding-bottom: 10px;
+        padding-bottom: 6px;
     }
 }
 
 .cat-list li {
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 8px 12px;
+    border-radius: 9px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: var(--text-color);
+    gap: 10px;
+    color: var(--text-muted);
     transition: all 0.2s;
 }
 
@@ -79,18 +82,20 @@
 }
 
 .cat-list li svg {
-    width: 18px;
-    height: 18px;
-    opacity: 0.7;
+    width: 15px;
+    height: 15px;
+    opacity: 0.8;
 }
 
 .cat-list li:hover {
     background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
 }
 
 .cat-list li.active {
     background-color: var(--primary-color);
     color: #fff;
+    font-weight: 600;
 }
 
 .cat-list li.active svg {
@@ -103,36 +108,45 @@
 }
 
 .page-header {
-    margin-bottom: 30px;
+    margin-bottom: 18px;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
 }
 
 .page-header p {
     color: var(--text-muted);
+    font-size: 13px;
 }
 
 .food-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 100px; /* Space for floating cart */
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+    margin-bottom: 80px; /* Space for floating cart */
 }
 
 /* Food Cards */
 .food-card {
-    background-color: #1e1e24;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
+    background-color: rgba(30, 30, 36, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 .food-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
 }
 
 .food-img {
-    height: 160px;
+    height: 125px;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -140,43 +154,50 @@
 
 .stock-badge {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 11px;
+    top: 8px;
+    right: 8px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10px;
     font-weight: 600;
     backdrop-filter: blur(4px);
 }
 
 .in-stock {
-    background-color: rgba(16, 185, 129, 0.8);
+    background-color: rgba(16, 185, 129, 0.85);
     color: #fff;
 }
 
 .out-stock {
-    background-color: rgba(239, 68, 68, 0.8);
+    background-color: rgba(239, 68, 68, 0.85);
     color: #fff;
 }
 
 .food-info {
-    padding: 16px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
 }
 
 .food-info h3 {
-    font-size: 16px;
-    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.3;
 }
 
 .food-info .price {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 15px;
     color: var(--primary-color);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .food-info .disabled-text {
-    color: #555;
+    color: #666;
+    font-size: 12px;
 }
 
 .food-card .btn {
@@ -190,31 +211,35 @@
 /* Floating Cart */
 .floating-cart {
     position: fixed;
-    bottom: 30px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
-    max-width: 400px;
-    padding: 16px 20px;
+    max-width: 360px;
+    padding: 10px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 50;
     cursor: pointer;
-    background-color: rgba(164, 118, 245, 0.1) !important;
+    background: rgba(26, 26, 32, 0.9) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(164, 118, 245, 0.3) !important;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .cart-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .cart-icon-wrapper {
     position: relative;
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     background-color: var(--primary-color);
     border-radius: 50%;
     display: flex;
@@ -223,23 +248,28 @@
     color: #fff;
 }
 
+.cart-icon-wrapper svg {
+    width: 16px;
+    height: 16px;
+}
+
 .cart-count {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -4px;
+    right: -4px;
     background-color: #fff;
     color: var(--primary-color);
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
 }
 
 .cart-total {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 700;
 }

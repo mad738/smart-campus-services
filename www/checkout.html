@@ -397,39 +397,39 @@
 
         <!-- Confirmation State -->
         <div id="confirmation-state" class="glass-panel">
-            <h2 class="gradient-text" style="font-size: 32px; margin-bottom: 10px;">Order Confirmed!</h2>
-            <p style="color: #a1a1aa; margin-bottom: 40px;">Order ID: #SC-8924 • Est. Pickup: 12:45 PM</p>
-            
-            <div class="qr-placeholder">
-                <!-- Using a dummy QR image for prototype -->
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SC-8924" alt="QR Code">
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #10b981;">
+                <i data-feather="check" style="width: 36px; height: 36px;"></i>
             </div>
+            <h2 class="gradient-text" style="font-size: 28px; margin-bottom: 8px;">Order Placed Successfully!</h2>
+            <p style="color: #a1a1aa; margin-bottom: 24px;" id="conf-order-meta">Order ID: #SC-0000 • Status: Requested</p>
             
-            <p style="font-size: 18px; font-weight: 600; margin-bottom: 30px;">Show this QR Code at the counter</p>
+            <div id="conf-orders-details" style="max-width: 500px; margin: 0 auto 25px; text-align: left; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+                <!-- Dynamically populated with order items and PIN -->
+            </div>
 
             <!-- Status progress bar requirement -->
-            <div class="status-tracker">
-                <div class="tracker-step active">
+            <div class="status-tracker" id="conf-status-tracker">
+                <div class="tracker-step active" id="step-placed">
                     <div class="step-circle"><i data-feather="check"></i></div>
                     <span>Placed</span>
                 </div>
-                <div class="tracker-step active">
+                <div class="tracker-step" id="step-preparing">
                     <div class="step-circle"><i data-feather="coffee"></i></div>
                     <span>Preparing</span>
                 </div>
-                <div class="tracker-step">
+                <div class="tracker-step" id="step-ready">
                     <div class="step-circle"><i data-feather="bell"></i></div>
                     <span>Ready</span>
                 </div>
             </div>
 
-            <div style="margin-top: 40px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; display: inline-block;">
-                <span style="color: var(--primary-color); font-weight: 700;">Live Queue Info:</span>
-                <span style="color: #d1d5db; margin-left: 10px;">There are 4 people ahead of you.</span>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <button class="btn btn-outline" onclick="window.location.href='home.html'">Back to Home</button>
+            <div style="margin-top: 30px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="window.location.href='home.html'" style="padding: 12px 24px;">
+                    <i data-feather="activity"></i> Track Live on Home
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='food.html'" style="padding: 12px 24px;">
+                    Order More
+                </button>
             </div>
         </div>
 
@@ -556,40 +556,87 @@
                 document.getElementById('confirmation-state').style.display = 'block';
                 
                 const cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj')) || {};
-                let itemsList = [];
-                let isXerox = false;
+                
+                // Group cart items by vendorId (so each vendor gets ONLY their own ordered items)
+                const vendorOrders = {};
                 for (let id in cartItems) {
-                    itemsList.push(`${cartItems[id].quantity}x ${cartItems[id].name}`);
-                    if (id.startsWith('xerox_')) isXerox = true;
+                    const item = cartItems[id];
+                    const isXerox = id.startsWith('xerox_') || item.vendorType === 'xerox';
+                    const vId = isXerox ? 'xerox_main' : (item.vendorId || 'canteen_main');
+                    const vName = isXerox ? 'Xerox Center' : (item.vendorName || 'Campus Canteen');
+                    const vType = isXerox ? 'xerox' : 'food';
+
+                    if (!vendorOrders[vId]) {
+                        vendorOrders[vId] = {
+                            vendorId: vId,
+                            vendorName: vName,
+                            vendorType: vType,
+                            itemsList: [],
+                            totalAmount: 0
+                        };
+                    }
+                    vendorOrders[vId].itemsList.push(`${item.quantity}x ${item.name}`);
+                    vendorOrders[vId].totalAmount += (item.price * item.quantity);
                 }
                 
-                if (itemsList.length > 0) {
-                    const orderId = 'SC-' + Math.floor(1000 + Math.random() * 9000);
-                    
-                    const isDelivery = document.getElementById('fulfillment-delivery') && document.getElementById('fulfillment-delivery').classList.contains('selected');
-                    const fulfillmentType = isDelivery ? 'delivery' : 'pickup';
-                    const locationVal = isDelivery ? (document.getElementById('delivery-location').value || 'Default Block') : 'Pickup Counter';
+                const isDelivery = document.getElementById('fulfillment-delivery') && document.getElementById('fulfillment-delivery').classList.contains('selected');
+                const fulfillmentType = isDelivery ? 'delivery' : 'pickup';
+                const locationVal = isDelivery ? (document.getElementById('delivery-location').value || 'Default Block') : 'Pickup Counter';
 
+                let createdOrdersHtml = '';
+                let firstOrderId = '';
+
+                for (let vId in vendorOrders) {
+                    const vo = vendorOrders[vId];
+                    const orderId = 'SC-' + Math.floor(1000 + Math.random() * 9000);
+                    if (!firstOrderId) firstOrderId = orderId;
+                    const orderPin = Math.floor(1000 + Math.random() * 9000).toString().padStart(4, '0');
+                    
                     try {
                         await addDoc(collection(db, 'orders'), {
                             orderId: orderId,
                             userId: auth.currentUser.uid,
                             userEmail: auth.currentUser.email,
-                            userName: auth.currentUser.displayName || "Student",
-                            type: isXerox ? 'xerox' : 'food',
-                            items: itemsList.join(', '),
+                            userName: auth.currentUser.displayName || (auth.currentUser.email.split('@')[0]),
+                            vendorId: vo.vendorId,
+                            vendorName: vo.vendorName,
+                            type: vo.vendorType,
+                            items: vo.itemsList.join(', '),
+                            totalPrice: vo.totalAmount,
                             timestamp: serverTimestamp(),
+                            createdAt: new Date().toISOString(),
                             status: 'Requested',
-                            pin: Math.floor(1000 + Math.random() * 9000).toString().padStart(4, '0'),
+                            pin: orderPin,
                             fulfillment: fulfillmentType,
                             location: locationVal
                         });
+
+                        createdOrdersHtml += `
+                            <div style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-weight:700; color:var(--primary-color);">#${orderId}</span>
+                                    <span style="font-size:12px; padding:2px 8px; border-radius:4px; background:rgba(164,118,245,0.15); color:var(--primary-color); font-weight:600;">${vo.vendorName}</span>
+                                </div>
+                                <div style="font-size:14px; margin-top:6px; color:#fff;">${vo.itemsList.join(', ')}</div>
+                                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--text-muted);">
+                                    <span>Fulfillment: <strong style="color:#fff;">${fulfillmentType.toUpperCase()}</strong> (${locationVal})</span>
+                                    <span>Verification PIN: <strong style="color:#10b981; font-size:14px; letter-spacing:2px;">${orderPin}</strong></span>
+                                </div>
+                            </div>
+                        `;
                     } catch (e) {
                         console.error('Error saving order to Firestore: ', e);
                     }
                 }
                 
+                const metaEl = document.getElementById('conf-order-meta');
+                if (metaEl) metaEl.innerText = `Order ID: #${firstOrderId} • Status: Requested`;
+                
+                const detailsEl = document.getElementById('conf-orders-details');
+                if (detailsEl) detailsEl.innerHTML = createdOrdersHtml;
+                
                 localStorage.removeItem('smartCampusCartObj');
+                if (typeof feather !== 'undefined') feather.replace();
             }, 1000); 
         };
     </script>

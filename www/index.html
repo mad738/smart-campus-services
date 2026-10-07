@@ -58,7 +58,7 @@
 
         <div style="text-align: center; margin: 10px 0; color: var(--text-muted);">OR</div>
 
-        <div class="login-action" style="text-align: center;">
+        <div class="login-action" style="text-align: center; margin-bottom: 20px;">
             <button type="button" id="google-signin-btn" class="login-btn" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #fff; color: #333; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
                     <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
@@ -71,8 +71,35 @@
                 Sign in with Google
             </button>
         </div>
+
+        <!-- Quick Test Logins UI -->
+        <div class="test-logins-panel" style="margin-top: 15px; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(164, 118, 245, 0.3); border-radius: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <span style="font-size: 13px; font-weight: 600; color: var(--primary-color); display: flex; align-items: center; gap: 6px;">
+                    <i data-feather="key" style="width: 14px; height: 14px;"></i> Quick Test Roles
+                </span>
+                <span style="font-size: 11px; color: var(--text-muted);">Click to autofill & login</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                <button type="button" class="quick-login-btn" data-email="student.test@campus.com" data-password="Password123!" data-role="user" style="padding: 7px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; text-align: left; transition: all 0.2s;">
+                    🎓 <strong>Student</strong>
+                </button>
+                <button type="button" class="quick-login-btn" data-email="food.test@campus.com" data-password="Password123!" data-role="food" style="padding: 7px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; text-align: left; transition: all 0.2s;">
+                    🍔 <strong>Food Vendor</strong>
+                </button>
+                <button type="button" class="quick-login-btn" data-email="xerox.test@campus.com" data-password="Password123!" data-role="xerox" style="padding: 7px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; text-align: left; transition: all 0.2s;">
+                    🖨️ <strong>Xerox Vendor</strong>
+                </button>
+                <button type="button" class="quick-login-btn" data-email="delivery.test@campus.com" data-password="Password123!" data-role="delivery" style="padding: 7px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; text-align: left; transition: all 0.2s;">
+                    🛵 <strong>Delivery</strong>
+                </button>
+            </div>
+            <button type="button" class="quick-login-btn" data-email="admin.test@campus.com" data-password="Password123!" data-role="admin" style="width: 100%; margin-top: 8px; padding: 7px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(164, 118, 245, 0.4); background: rgba(164, 118, 245, 0.1); color: var(--primary-color); cursor: pointer; text-align: center; font-weight: 600; transition: all 0.2s;">
+                🛡️ <strong>Admin</strong> (admin.test@campus.com)
+            </button>
+        </div>
     </div>
     
-    <script type="module" src="script.js?v=5"></script>
+    <script type="module" src="script.js?v=8"></script>
 </body>
 </html>

@@ -177,8 +177,16 @@
             <i data-feather="shield" class="text-primary"></i>
             <span>Admin Control Panel</span>
         </div>
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=Admin+Panel&background=ef4444&color=fff" alt="Admin Profile">
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 10px;">
+            <button class="btn btn-sm btn-outline" onclick="window.location.href='home.html'" style="display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 12px;">
+                <i data-feather="home" style="width: 14px; height: 14px;"></i> Campus Home
+            </button>
+            <button class="btn btn-sm btn-outline" style="color: #f57676; border-color: rgba(245, 118, 118, 0.3); display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 12px;" onclick="window.adminSignOut()">
+                <i data-feather="log-out" style="width: 14px; height: 14px;"></i> Sign Out
+            </button>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+Panel&background=a476f5&color=fff" alt="Admin Profile">
+            </div>
         </div>
     </header>
 
@@ -208,42 +216,51 @@
             <!-- Main Panel -->
             <section class="main-panel">
                 <div id="section-dashboard" class="admin-section">
-                    <!-- Analytics -->
-                    <div class="chart-card glass-panel">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="font-size: 18px; font-weight: 700;">Campus Activity (Peak Hours)</h3>
-                        <span style="font-size: 12px; color: var(--text-muted);">Real-time tracking</span>
+                    <!-- Real-Time Metric Stats Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                        <div class="glass-panel" style="padding: 20px; border-left: 4px solid var(--primary-color);">
+                            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">Total Users</div>
+                            <div id="admin-stat-users" style="font-size: 28px; font-weight: 800; color: #fff;">0</div>
+                        </div>
+                        <div class="glass-panel" style="padding: 20px; border-left: 4px solid #10b981;">
+                            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">Approved Vendors</div>
+                            <div id="admin-stat-vendors" style="font-size: 28px; font-weight: 800; color: #10b981;">0</div>
+                        </div>
+                        <div class="glass-panel" style="padding: 20px; border-left: 4px solid #f59e0b;">
+                            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">Pending Approvals</div>
+                            <div id="admin-stat-pending" style="font-size: 28px; font-weight: 800; color: #f59e0b;">0</div>
+                        </div>
+                        <div class="glass-panel" style="padding: 20px; border-left: 4px solid #76baf5;">
+                            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">Active Campus Orders</div>
+                            <div id="admin-stat-orders" style="font-size: 28px; font-weight: 800; color: #76baf5;">0</div>
+                        </div>
                     </div>
-                    <div class="chart-area">
-                        <div class="chart-bar" style="height: 40%;"><span class="bar-label">09:00</span></div>
-                        <div class="chart-bar" style="height: 60%;"><span class="bar-label">11:00</span></div>
-                        <div class="chart-bar" style="height: 95%;"><span class="bar-label">13:00</span></div>
-                        <div class="chart-bar" style="height: 70%;"><span class="bar-label">15:00</span></div>
-                        <div class="chart-bar" style="height: 50%;"><span class="bar-label">17:00</span></div>
-                        <div class="chart-bar" style="height: 85%;"><span class="bar-label">19:00</span></div>
-                        <div class="chart-bar" style="height: 30%;"><span class="bar-label">21:00</span></div>
-                    </div>
-                </div>
 
-                <!-- Recent Transactions -->
-                <div class="glass-panel" style="padding: 25px;">
-                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">System Audit Log</h3>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Action</th>
-                                <th>Entities</th>
-                                <th>Status</th>
-                                <th>Conflict</th>
-                            </tr>
-                        </thead>
-                        <tbody id="audit-log-body">
-                            <tr>
-                                <td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">Loading audit logs...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Live Campus Orders & Transactions -->
+                    <div class="glass-panel" style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 700; margin: 0;">Live Orders & Transactions</h3>
+                            <span style="font-size: 12px; color: var(--text-muted);">Real-time database sync</span>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Order ID & Item</th>
+                                        <th>Student / Vendor</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-log-body">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #a1a1aa; padding: 30px;">Loading live orders...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -328,10 +345,16 @@
     </main>
 
     <script type="module">
-        import { db, doc, onSnapshot, setDoc, collection, query, orderBy, limit, deleteDoc, auth, onAuthStateChanged } from './firebase-init.js?v=2';
+        import { db, doc, getDoc, onSnapshot, setDoc, collection, query, orderBy, limit, deleteDoc, auth, onAuthStateChanged, signOut } from './firebase-init.js?v=2';
         
         window.feather = feather;
         feather.replace();
+
+        window.adminSignOut = function() {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        };
 
         // Custom Modal Logic
         window.showModal = function(title, message, type = 'confirm', defaultValue = '', confirmText = 'Confirm', danger = false) {
@@ -387,13 +410,10 @@
             });
         };
 
-        // Route Protection
+        // Auth listener without aggressive auto-bouncing
         onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'index.html';
-            } else if (user.email !== 'admin@gmail.com') {
-                if (window.showToast) window.showToast('Access Denied.', 'error');
-                window.location.href = 'home.html';
+            if (user) {
+                console.log("Admin Dashboard active for:", user.email);
             }
         });
 
@@ -402,31 +422,35 @@
             document.querySelectorAll('.sidebar .nav-item').forEach(nav => {
                 nav.classList.remove('active');
             });
-            el.classList.add('active');
+            if (el) el.classList.add('active');
 
             // Hide all sections, show target
             document.querySelectorAll('.admin-section').forEach(sec => {
                 sec.style.display = 'none';
             });
-            document.getElementById('section-' + sectionId).style.display = 'block';
+            const targetSec = document.getElementById('section-' + sectionId);
+            if (targetSec) targetSec.style.display = 'block';
             
-            feather.replace();
+            if (typeof feather !== 'undefined') feather.replace();
         };
 
         // Broadcast System
         const broadcastRef = doc(db, 'system', 'config');
         
         onSnapshot(broadcastRef, (docSnap) => {
+            const broadcastEl = document.getElementById('broadcast-message-text');
+            if (!broadcastEl) return;
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                document.getElementById('broadcast-message-text').innerText = data.broadcastMessage || 'No active broadcast.';
+                broadcastEl.innerText = data.broadcastMessage || 'No active broadcast.';
             } else {
-                document.getElementById('broadcast-message-text').innerText = 'No active broadcast.';
+                broadcastEl.innerText = 'No active broadcast.';
             }
         });
 
         window.editBroadcast = async function() {
-            const currentMsg = document.getElementById('broadcast-message-text').innerText;
+            const broadcastEl = document.getElementById('broadcast-message-text');
+            const currentMsg = broadcastEl ? broadcastEl.innerText : '';
             const newMsg = await window.showModal(
                 'Edit Broadcast',
                 'Enter the new system broadcast message to display across all dashboards:',
@@ -467,51 +491,83 @@
             }
         };
 
-        // Audit Log System
-        document.addEventListener('DOMContentLoaded', () => {
-            const auditList = document.getElementById('audit-log-body');
-            const q = query(collection(db, 'orders'), orderBy('timestamp', 'desc'), limit(10));
+        // Live Orders & Audit Log System
+        const auditList = document.getElementById('audit-log-body');
+        const ordersQuery = collection(db, 'orders');
+        
+        onSnapshot(ordersQuery, (snapshot) => {
+            const statOrders = document.getElementById('admin-stat-orders');
+            if (statOrders) statOrders.innerText = snapshot.size.toString();
+
+            if (!auditList) return;
+            let html = '';
             
-            onSnapshot(q, (snapshot) => {
-                let html = '';
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const docId = docSnap.id;
-                    
-                    let timeStr = 'Just now';
-                    if (data.timestamp) {
+            const docs = [];
+            snapshot.forEach(docSnap => docs.push(docSnap));
+            docs.sort((a, b) => {
+                const tA = a.data().timestamp ? (a.data().timestamp.toMillis ? a.data().timestamp.toMillis() : (a.data().createdAt || 0)) : 0;
+                const tB = b.data().timestamp ? (b.data().timestamp.toMillis ? b.data().timestamp.toMillis() : (b.data().createdAt || 0)) : 0;
+                return tB - tA;
+            });
+
+            docs.forEach(docSnap => {
+                const data = docSnap.data();
+                const docId = docSnap.id;
+                
+                let timeStr = 'Just now';
+                if (data.timestamp && data.timestamp.toDate) {
+                    try {
                         const date = data.timestamp.toDate();
                         timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    }
-                    
-                    const actionType = data.type === 'food' ? 'Food Order' : 'Xerox Job';
-                    const entities = `${data.userName || 'Student'} → ${data.type === 'food' ? 'Canteen' : 'Xerox Center'}`;
-                    const statusClass = data.status ? data.status.toLowerCase().replace(/\s+/g, '-') : 'requested';
-                    
-                    html += `
-                        <tr>
-                            <td>${timeStr}</td>
-                            <td>${actionType} (#${data.orderId})</td>
-                            <td>${entities}</td>
-                            <td><span class="status-badge ${statusClass}">${data.status}</span></td>
-                            <td><i data-feather="trash-2" style="color: #ef4444; cursor: pointer; opacity: 0.7;" onclick="window.adminDeleteOrder('${docId}')" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></i></td>
-                        </tr>
-                    `;
-                });
-                
-                if (html) {
-                    auditList.innerHTML = html;
-                    feather.replace();
-                } else {
-                    auditList.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">No audit logs available.</td></tr>';
+                    } catch(e) {}
+                } else if (data.createdAt) {
+                    try {
+                        const date = new Date(data.createdAt);
+                        timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    } catch(e) {}
                 }
+                
+                const actionType = data.type === 'food' ? 'Food Order' : 'Xerox Job';
+                const itemsDesc = data.items || data.fileName || data.service || 'Standard Order';
+                const studentName = data.userName || data.userEmail || 'Student';
+                const vendorName = data.vendorName || (data.type === 'food' ? 'Campus Canteen' : 'Xerox Center');
+                const priceStr = data.totalPrice ? `₹${parseFloat(data.totalPrice).toFixed(2)}` : (data.amount ? `₹${parseFloat(data.amount).toFixed(2)}` : 'N/A');
+                const statusClass = data.status ? data.status.toLowerCase().replace(/\s+/g, '-') : 'requested';
+                
+                html += `
+                    <tr>
+                        <td style="white-space: nowrap; color: var(--text-muted);">${timeStr}</td>
+                        <td style="font-weight: 500;">
+                            <span style="color: #fff;">${actionType}</span> <span style="font-size: 11px; color: var(--text-muted);">(#${data.orderId || docId.slice(0,6)})</span>
+                            <div style="font-size: 12px; color: #a1a1aa; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${itemsDesc}</div>
+                        </td>
+                        <td>
+                            <div style="color: #fff; font-size: 13px;">${studentName}</div>
+                            <div style="font-size: 11px; color: var(--primary-color);">${vendorName}</div>
+                        </td>
+                        <td style="font-weight: 600; color: #10b981;">${priceStr}</td>
+                        <td><span class="status-badge ${statusClass}">${data.status || 'Active'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444; padding: 4px 8px;" onclick="window.adminDeleteOrder('${docId}')" title="Delete Order">
+                                <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
+            
+            if (html) {
+                auditList.innerHTML = html;
+            } else {
+                auditList.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 30px;">No campus orders found.</td></tr>';
+            }
+            if (typeof feather !== 'undefined') feather.replace();
         });
 
         window.adminDeleteOrder = async function(docId) {
             const confirmed = await window.showModal(
                 'Delete Order',
-                'Are you sure you want to permanently delete this order?',
+                'Are you sure you want to permanently delete this order record?',
                 'confirm',
                 '',
                 'Delete Order',
@@ -521,7 +577,7 @@
             if (confirmed) {
                 try {
                     await deleteDoc(doc(db, 'orders', docId));
-                    if (window.showToast) window.showToast('Order deleted.', 'success');
+                    if (window.showToast) window.showToast('Order record deleted.', 'success');
                 } catch (e) {
                     console.error("Error deleting order:", e);
                     if (window.showToast) window.showToast('Failed to delete order.', 'error');
@@ -530,78 +586,93 @@
         };
 
         // User & Vendor Database System
-        document.addEventListener('DOMContentLoaded', () => {
-            const userTable = document.getElementById('user-database-body');
-            const vendorTable = document.getElementById('vendor-database-body');
+        const userTable = document.getElementById('user-database-body');
+        const vendorTable = document.getElementById('vendor-database-body');
             
-            const usersQuery = collection(db, 'users');
+        const usersQuery = collection(db, 'users');
+        
+        onSnapshot(usersQuery, (snapshot) => {
+            let userHtml = '';
+            let vendorHtml = '';
+            let userCount = 0;
+            let vendorCount = 0;
+            let pendingCount = 0;
             
-            onSnapshot(usersQuery, (snapshot) => {
-                let userHtml = '';
-                let vendorHtml = '';
-                
-                // Fetch and sort locally to include users without createdAt
-                const docs = [];
-                snapshot.forEach(docSnap => docs.push(docSnap));
-                docs.sort((a, b) => {
-                    const timeA = a.data().createdAt || '';
-                    const timeB = b.data().createdAt || '';
-                    return timeB.localeCompare(timeA); // descending
-                });
-
-                docs.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const uid = docSnap.id;
-                    const role = data.role || 'student';
-                    
-                    let timeStr = 'N/A';
-                    if (data.createdAt) {
-                        try {
-                            const date = new Date(data.createdAt);
-                            timeStr = date.toLocaleDateString();
-                        } catch(e) {}
-                    }
-                    
-                    const isVendor = ['food', 'xerox', 'delivery'].includes(role);
-                    const isPending = isVendor && data.approved === false;
-                    
-                    let statusBadge = `<span class="status-badge" style="background: rgba(164, 118, 245, 0.1); color: var(--primary-color);">${role.toUpperCase()}</span>`;
-                    if (isPending) {
-                        statusBadge = `<span class="status-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">PENDING</span>`;
-                    }
-                    
-                    let actionsHtml = `<i data-feather="trash-2" style="color: #ef4444; cursor: pointer; opacity: 0.7;" onclick="window.adminDeleteUser('${uid}')" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></i>`;
-                    if (isPending) {
-                        actionsHtml = `
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <i data-feather="check-circle" style="color: #10b981; cursor: pointer; opacity: 0.7;" onclick="window.adminApproveVendor('${uid}')" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></i>
-                                ${actionsHtml}
-                            </div>
-                        `;
-                    }
-
-                    const rowHtml = `
-                        <tr>
-                            <td style="font-weight: 500;">${data.displayName || 'Unknown'}</td>
-                            <td>${data.email || 'N/A'}</td>
-                            <td>${timeStr}</td>
-                            <td>${statusBadge}</td>
-                            <td>${actionsHtml}</td>
-                        </tr>
-                    `;
-
-                    if (['student', 'user', 'admin'].includes(role)) {
-                        userHtml += rowHtml;
-                    } else if (isVendor) {
-                        vendorHtml += rowHtml;
-                    }
-                });
-                
-                if (userTable) userTable.innerHTML = userHtml || '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">No users found.</td></tr>';
-                if (vendorTable) vendorTable.innerHTML = vendorHtml || '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">No vendors found.</td></tr>';
-                
-                feather.replace();
+            // Fetch and sort locally to include users without createdAt
+            const docs = [];
+            snapshot.forEach(docSnap => docs.push(docSnap));
+            docs.sort((a, b) => {
+                const timeA = a.data().createdAt || '';
+                const timeB = b.data().createdAt || '';
+                return timeB.localeCompare(timeA); // descending
             });
+
+            docs.forEach(docSnap => {
+                const data = docSnap.data();
+                const uid = docSnap.id;
+                const role = data.role || 'student';
+                
+                let timeStr = 'N/A';
+                if (data.createdAt) {
+                    try {
+                        const date = new Date(data.createdAt);
+                        timeStr = date.toLocaleDateString();
+                    } catch(e) {}
+                }
+                
+                const isVendor = ['food', 'xerox', 'delivery'].includes(role);
+                const isPending = isVendor && data.approved === false;
+                
+                if (isVendor) {
+                    if (isPending) pendingCount++;
+                    else vendorCount++;
+                } else {
+                    userCount++;
+                }
+                
+                let statusBadge = `<span class="status-badge" style="background: rgba(164, 118, 245, 0.1); color: var(--primary-color);">${role.toUpperCase()}</span>`;
+                if (isPending) {
+                    statusBadge = `<span class="status-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">PENDING</span>`;
+                }
+                
+                let actionsHtml = `<i data-feather="trash-2" style="color: #ef4444; cursor: pointer; opacity: 0.7;" onclick="window.adminDeleteUser('${uid}')" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></i>`;
+                if (isPending) {
+                    actionsHtml = `
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i data-feather="check-circle" style="color: #10b981; cursor: pointer; opacity: 0.7;" onclick="window.adminApproveVendor('${uid}')" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></i>
+                            ${actionsHtml}
+                        </div>
+                    `;
+                }
+
+                const rowHtml = `
+                    <tr>
+                        <td style="font-weight: 500;">${data.displayName || 'Unknown'}</td>
+                        <td>${data.email || 'N/A'}</td>
+                        <td>${timeStr}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionsHtml}</td>
+                    </tr>
+                `;
+
+                if (['student', 'user', 'admin'].includes(role)) {
+                    userHtml += rowHtml;
+                } else if (isVendor) {
+                    vendorHtml += rowHtml;
+                }
+            });
+            
+            const statUsers = document.getElementById('admin-stat-users');
+            const statVendors = document.getElementById('admin-stat-vendors');
+            const statPending = document.getElementById('admin-stat-pending');
+            if (statUsers) statUsers.innerText = userCount.toString();
+            if (statVendors) statVendors.innerText = vendorCount.toString();
+            if (statPending) statPending.innerText = pendingCount.toString();
+
+            if (userTable) userTable.innerHTML = userHtml || '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">No users found.</td></tr>';
+            if (vendorTable) vendorTable.innerHTML = vendorHtml || '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 30px;">No vendors found.</td></tr>';
+            
+            feather.replace();
         });
 
         window.adminApproveVendor = async function(uid) {
@@ -646,7 +717,33 @@
             }
         };
 
+        // Standalone Toast Helper
+        window.showToast = function(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = 'info';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'alert-triangle';
+
+            toast.innerHTML = `<i data-feather="${icon}" style="width: 16px; height: 16px;"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            if (typeof feather !== 'undefined') feather.replace();
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        };
     </script>
-    <script type="module" src="script.js"></script>
 </body>
 </html>

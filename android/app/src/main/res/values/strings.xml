@@ -4,4 +4,6 @@
     <string name="title_activity_main">SmartCampus</string>
     <string name="package_name">com.mad738.smartcampus</string>
     <string name="custom_url_scheme">com.mad738.smartcampus</string>
+    <string name="server_client_id">741457806645-3qet6c5ees4oiobc0e7ica1t4b45q6ih.apps.googleusercontent.com</string>
 </resources>
+

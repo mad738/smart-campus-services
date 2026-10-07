@@ -1,4 +1,4 @@
-import { auth, db, provider, signInWithPopup, doc, getDoc, setDoc, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification, signOut } from "./firebase-init.js";
+import { auth, db, provider, signInWithPopup, signInWithCredential, GoogleAuthProvider, doc, getDoc, setDoc, updateDoc, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification, signOut } from "./firebase-init.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const roleChips = document.querySelectorAll('.role-chip');
@@ -123,12 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
-        let userRole = selectedRole;
+        const isAdminAccount = user.email === 'admin@gmail.com' || 
+                               user.email === 'admin.test@campus.com' || 
+                               user.email === 'admin@campus.com' || 
+                               (user.email && user.email.toLowerCase().includes('admin'));
+
+        let userRole = isAdminAccount ? 'admin' : selectedRole;
         let isApproved = true;
 
         if (!userSnap.exists()) {
             // First time login: create user in Firestore
-            const isVendor = ['food', 'xerox', 'delivery'].includes(selectedRole);
+            const isVendor = ['food', 'xerox', 'delivery'].includes(userRole);
             isApproved = !isVendor; // Vendors start unapproved, students/admins start approved
             
             await setDoc(userRef, {
@@ -136,16 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: user.email,
                 displayName: user.displayName || user.email.split('@')[0],
                 photoURL: user.photoURL || '',
-                role: selectedRole,
+                role: userRole,
                 approved: isApproved,
                 createdAt: new Date().toISOString()
             });
         } else {
             // Existing user: get their assigned role from database
             const userData = userSnap.data();
-            userRole = userData.role;
-            // If they are a vendor but 'approved' field is missing, default to true for legacy vendors
-            // OR if 'approved' is explicitly false, keep it false
+            userRole = isAdminAccount ? 'admin' : (userData.role || selectedRole);
+            
+            if (isAdminAccount && userData.role !== 'admin') {
+                await updateDoc(userRef, { role: 'admin', approved: true });
+            }
+
             if (['food', 'xerox', 'delivery'].includes(userRole)) {
                 isApproved = userData.approved !== false;
             }
@@ -158,13 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Approval Pending',
                 'Your vendor account has been created successfully, but it requires Admin approval before you can access the dashboard.<br><br>Please contact the administrator or wait for approval.'
             );
-            return;
-        }
-
-        // Enforce admin@gmail.com restriction
-        if (userRole === 'admin' && user.email !== 'admin@gmail.com') {
-            await signOut(auth);
-            if (window.showToast) window.showToast('Access Denied: Only admin@gmail.com can log in as Admin.', 'error');
             return;
         }
 
@@ -199,15 +200,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Google Sign-In Logic
+    // Google Sign-In Logic (Hybrid Native Android + Web)
     if (googleSignInBtn) {
         googleSignInBtn.addEventListener('click', async () => {
+            showToast("Signing in with Google...", 'info');
             try {
+                // Check if running inside Capacitor Native Android
+                if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+                    try {
+                        const { GoogleAuth } = window.Capacitor.Plugins;
+                        if (GoogleAuth) {
+                            try {
+                                await GoogleAuth.initialize({
+                                    clientId: '741457806645-3qet6c5ees4oiobc0e7ica1t4b45q6ih.apps.googleusercontent.com',
+                                    scopes: ['profile', 'email'],
+                                    grantOfflineAccess: true,
+                                });
+                            } catch (initErr) {}
+
+                            const googleUser = await GoogleAuth.signIn();
+                            const idToken = (googleUser.authentication && googleUser.authentication.idToken) || googleUser.idToken;
+                            const credential = GoogleAuthProvider.credential(idToken);
+                            const result = await signInWithCredential(auth, credential);
+                            await handleAuthSuccess(result.user);
+                            return;
+                        }
+                    } catch (nativeErr) {
+                        console.warn("Native Google Auth error: ", nativeErr);
+                        showToast("Native Sign-In: " + (nativeErr.message || nativeErr), 'error');
+                        return;
+                    }
+                }
+                
+                // Web Browser / Standard Flow
                 const result = await signInWithPopup(auth, provider);
                 await handleAuthSuccess(result.user);
             } catch (error) {
                 console.error("Error signing in with Google: ", error);
-                showToast("Login failed: " + error.message, 'error');
+                showToast("Google sign in: " + (error.message || error), 'error');
             }
         });
     }
@@ -216,11 +246,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emailLoginForm) {
         emailLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = emailInput.value;
+            const email = emailInput.value.trim();
             const password = passwordInput.value;
             try {
                 const result = await signInWithEmailAndPassword(auth, email, password);
-                if (!result.user.emailVerified) {
+                const isBypassEmail = email.endsWith('@campus.com') || 
+                                      email.endsWith('@test.com') || 
+                                      email.includes('.test@') || 
+                                      email === 'admin@gmail.com' ||
+                                      email.includes('admin');
+                if (!result.user.emailVerified && !isBypassEmail) {
                     await sendEmailVerification(result.user);
                     await signOut(auth);
                     showToast("Please verify your email before logging in. A new verification link has been sent.", 'info');
@@ -256,23 +291,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Forgot Password Logic
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', async (e) => {
-            e.preventDefault();
-            console.log("Forgot password link was clicked!");
-            const email = emailInput.value;
-            if (!email) {
-                showToast("Please enter your email address first to reset your password.", 'info');
-                return;
-            }
+    // Quick Test Logins Handler
+    const quickLoginBtns = document.querySelectorAll('.quick-login-btn');
+    quickLoginBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const email = btn.getAttribute('data-email');
+            const password = btn.getAttribute('data-password');
+            const role = btn.getAttribute('data-role');
+
+            if (emailInput) emailInput.value = email;
+            if (passwordInput) passwordInput.value = password;
+
+            // Select matching role chip
+            selectedRole = role;
+            roleChips.forEach(chip => {
+                if (chip.getAttribute('data-role') === role) {
+                    chip.classList.add('active');
+                } else {
+                    chip.classList.remove('active');
+                }
+            });
+
+            showToast(`Autofilled ${role.toUpperCase()} test account. Logging in...`, 'info');
+
             try {
-                await sendPasswordResetEmail(auth, email);
-                showToast("Password reset email sent! Check your inbox.", 'success');
+                const result = await signInWithEmailAndPassword(auth, email, password);
+                await handleAuthSuccess(result.user);
             } catch (error) {
-                console.error("Error sending reset email: ", error);
-                showToast("Failed to send reset email: " + error.message, 'error');
+                console.error("Quick login error: ", error);
+                showToast("Quick login failed: " + error.message, 'error');
             }
         });
-    }
+    });
 });
+

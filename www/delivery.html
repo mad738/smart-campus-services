@@ -159,15 +159,15 @@
         <!-- Agent Stats -->
         <div class="agent-stats">
             <div class="stat-box glass-panel">
-                <span class="stat-num">08</span>
+                <span class="stat-num" id="stat-tasks-done">0</span>
                 <span class="stat-label">Tasks Done</span>
             </div>
             <div class="stat-box glass-panel">
-                <span class="stat-num">₹145</span>
+                <span class="stat-num" id="stat-earnings">₹0</span>
                 <span class="stat-label">Earnings</span>
             </div>
             <div class="stat-box glass-panel">
-                <span class="stat-num">4.9</span>
+                <span class="stat-num" id="stat-rating">5.0</span>
                 <span class="stat-label">Rating</span>
             </div>
         </div>
@@ -204,52 +204,79 @@
         // Listen for tasks that are Ready or Out for Delivery
         document.addEventListener('DOMContentLoaded', () => {
             const q = query(collection(db, 'orders'), where('fulfillment', '==', 'delivery'));
-            onSnapshot(q, (snapshot) => {
+                        onSnapshot(q, (snapshot) => {
                 const taskList = document.getElementById('delivery-task-list');
+                const statTasksDone = document.getElementById('stat-tasks-done');
+                const statEarnings = document.getElementById('stat-earnings');
                 let html = '';
+                let tasksDoneCount = 0;
+                let earningsTotal = 0;
                 
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const docId = docSnap.id;
                     tasksData[docId] = data;
                     
-                    // We only want orders that are Ready, or currently being delivered by THIS agent
+                    // Check status visibility
                     const uid = auth.currentUser ? auth.currentUser.uid : null;
-                    if (data.status !== 'Ready' && data.status !== 'Out for Delivery') return;
-                    if (data.status === 'Out for Delivery' && data.deliveryAgentId !== uid) return;
+                    if (data.status === 'Completed' || data.status === 'Delivered') {
+                        if (uid && data.deliveryAgentId === uid) {
+                            tasksDoneCount++;
+                            earningsTotal += (data.deliveryFee || 20);
+                        }
+                        return;
+                    }
+
+                    // Visible pipeline statuses: Requested, Accepted, Preparing, Ready, Out for Delivery
+                    const validStatuses = ['Requested', 'Accepted', 'Preparing', 'Ready', 'Out for Delivery'];
+                    if (!validStatuses.includes(data.status)) return;
+                    if (data.status === 'Out for Delivery' && data.deliveryAgentId && data.deliveryAgentId !== uid) return;
                     
-                    const isClaimed = data.status === 'Out for Delivery';
+                    const isClaimedByMe = data.status === 'Out for Delivery' && data.deliveryAgentId === uid;
+                    const isReadyToClaim = data.status === 'Ready';
+                    const isPreparing = ['Requested', 'Accepted', 'Preparing'].includes(data.status);
                     
+                    let actionButtonHtml = '';
+                    if (isClaimedByMe) {
+                        actionButtonHtml = `<button class="btn btn-primary" style="background-color: #10b981; border-color: #10b981;" disabled><i data-feather="truck"></i> Out for Delivery</button>`;
+                    } else if (isReadyToClaim) {
+                        actionButtonHtml = `<button class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); border:none;" onclick="window.claimTask('${docId}')"><i data-feather="check-circle"></i> Claim & Start Delivery</button>`;
+                    } else {
+                        actionButtonHtml = `<button class="btn btn-outline" style="opacity: 0.7; cursor: not-allowed;" disabled><i data-feather="clock"></i> Vendor ${data.status || 'Preparing'}</button>`;
+                    }
+
+                    const vendorDisplayName = data.vendorName || (data.type === 'food' ? 'Campus Canteen' : 'Xerox Center');
+
                     html += `
                         <div class="task-card glass-panel" id="task-${docId}">
                             <div class="task-header">
-                                <span class="task-id">#${data.orderId}</span>
-                                <span class="task-type type-${data.type}">${data.type.toUpperCase()} Order</span>
+                                <div>
+                                    <span class="task-id">#${data.orderId || docId.substring(0,6)}</span>
+                                    <div style="font-size: 13px; font-weight: 600; color: #fff; margin-top: 2px;">${data.items || 'Order Items'}</div>
+                                </div>
+                                <span class="task-type type-${data.type}">${data.status || 'Ready'}</span>
                             </div>
                             <div class="task-info">
                                 <div class="info-item">
-                                    <span class="info-label">Pickup</span>
-                                    <span class="info-value">${data.type === 'food' ? 'Main Canteen' : 'Xerox Center'}</span>
+                                    <span class="info-label">Pickup From</span>
+                                    <span class="info-value" style="color: var(--primary-color);">${vendorDisplayName}</span>
                                 </div>
                                 <div class="info-item">
-                                    <span class="info-label">Delivery Earnings</span>
-                                    <span class="info-value">₹5.00</span>
+                                    <span class="info-label">Delivery Pay</span>
+                                    <span class="info-value" style="color: #10b981;">₹20.00</span>
                                 </div>
                             </div>
                             <div class="route-info">
                                 <div class="route-path">
-                                    <i data-feather="map-pin" style="width:14px; color: #ef4444;"></i>
-                                    <span>${data.location}</span>
+                                    <i data-feather="map-pin" style="width:16px; height:16px; color: #ef4444; flex-shrink: 0;"></i>
+                                    <span style="font-weight: 500;">Deliver to: <strong>${data.location || 'Campus Location'}</strong> (${data.userName || 'Student'})</span>
                                 </div>
                             </div>
                             
-                            ${isClaimed 
-                                ? `<button class="btn btn-primary" style="background-color: #10b981;" disabled><i data-feather="check"></i> Task Claimed</button>`
-                                : `<button class="btn btn-primary" onclick="window.claimTask('${docId}')">Claim Task</button>`
-                            }
+                            ${actionButtonHtml}
                             
-                            <div class="pin-section" id="pin-${docId}" style="display: ${isClaimed ? 'block' : 'none'};">
-                                <span class="info-label">Enter User 4-Digit PIN to complete delivery</span>
+                            <div class="pin-section" id="pin-${docId}" style="display: ${isClaimedByMe ? 'block' : 'none'};">
+                                <span class="info-label" style="display:block; margin-bottom: 6px;">Ask student for their 4-Digit Order PIN:</span>
                                 <div class="pin-input-group">
                                     <input type="text" maxlength="1" class="pin-digit pin-${docId}-0">
                                     <input type="text" maxlength="1" class="pin-digit pin-${docId}-1">
@@ -262,12 +289,15 @@
                     `;
                 });
                 
+                if (statTasksDone) statTasksDone.innerText = tasksDoneCount.toString();
+                if (statEarnings) statEarnings.innerText = `₹${earningsTotal}`;
+
                 if (html) {
                     taskList.innerHTML = html;
                     feather.replace();
                     setupPinInputs();
                 } else {
-                    taskList.innerHTML = '<div style="text-align: center; color: #a1a1aa; padding: 40px;">No delivery tasks available.</div>';
+                    taskList.innerHTML = '<div style="text-align: center; color: #a1a1aa; padding: 40px;">No delivery tasks available at the moment.</div>';
                 }
             });
         });
@@ -329,7 +359,6 @@
             });
         }
     </script>
-    <script type="module" src="script.js"></script>
     <script type="module" src="home.js"></script>
 </body>
 </html>

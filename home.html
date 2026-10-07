@@ -22,6 +22,9 @@
             <input type="text" placeholder="Search services, food, print jobs...">
         </div>
         <div class="nav-actions">
+            <button class="btn btn-sm btn-primary" id="nav-admin-btn" style="display: none; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px; font-size: 12px;" onclick="window.location.href='admin.html'">
+                <i data-feather="shield" style="width: 14px; height: 14px;"></i> Admin Panel
+            </button>
             <button class="icon-btn" onclick="window.location.href='checkout.html'">
                 <i data-feather="shopping-cart"></i>
                 <span class="badge">2</span>
@@ -79,6 +82,17 @@
                     <i data-feather="arrow-right"></i>
                 </div>
             </div>
+
+            <div class="service-card" id="admin-service-card" style="display: none; border: 1px solid rgba(164, 118, 245, 0.4); background: rgba(164, 118, 245, 0.08);" onclick="window.location.href='admin.html'">
+                <div class="card-icon" style="background: rgba(164, 118, 245, 0.2); color: var(--primary-color);">
+                    <i data-feather="shield"></i>
+                </div>
+                <h3>Admin Panel</h3>
+                <p>Manage vendors, approvals, users & broadcasts.</p>
+                <div class="card-arrow" style="background: var(--primary-color);">
+                    <i data-feather="arrow-right"></i>
+                </div>
+            </div>
         </div>
 
         <!-- Active Orders Section -->
@@ -100,20 +114,9 @@
                         <th style="padding: 12px;">Status</th>
                     </tr>
                 </thead>
-                <tbody style="font-size: 14px;">
-                    <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-                        <td style="padding: 12px;">#SC-8901</td>
-                        <td style="padding: 12px;">Food (Nescafe)</td>
-                        <td style="padding: 12px;">Yesterday</td>
-                        <td style="padding: 12px;">₹3.00</td>
-                        <td style="padding: 12px;"><span class="status-badge ready">Completed</span></td>
-                    </tr>
-                    <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-                        <td style="padding: 12px;">#SC-8895</td>
-                        <td style="padding: 12px;">Xerox</td>
-                        <td style="padding: 12px;">3 Oct</td>
-                        <td style="padding: 12px;">₹12.50</td>
-                        <td style="padding: 12px;"><span class="status-badge ready">Completed</span></td>
+                <tbody id="booking-history-body" style="font-size: 14px;">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #a1a1aa; padding: 24px;">No past booking history found.</td>
                     </tr>
                 </tbody>
             </table>
@@ -141,103 +144,154 @@
 
         window.renderActiveOrders = function(user) {
             const container = document.getElementById('active-orders-container');
+            const historyBody = document.getElementById('booking-history-body');
             
             if (!user) return;
 
-            const q = query(collection(db, 'orders'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'));
+            const q = query(collection(db, 'orders'), where('userId', '==', user.uid));
             
             onSnapshot(q, (snapshot) => {
                 if (snapshot.empty) {
-                    container.innerHTML = '<p style="color: #a1a1aa;">No active orders right now.</p>';
+                    if (container) container.innerHTML = '<p style="color: #a1a1aa;">No active orders right now.</p>';
+                    if (historyBody) historyBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 24px;">No past booking history found.</td></tr>';
                     return;
                 }
                 
-                container.innerHTML = '';
+                if (container) container.innerHTML = '';
+                let historyHtml = '';
+                let activeCount = 0;
+
+                // Sort orders by timestamp / createdAt desc
+                const docsList = [];
+                snapshot.forEach(docSnap => docsList.push({ id: docSnap.id, data: docSnap.data() }));
+                docsList.sort((a, b) => {
+                    const tA = a.data.createdAt ? new Date(a.data.createdAt).getTime() : 0;
+                    const tB = b.data.createdAt ? new Date(b.data.createdAt).getTime() : 0;
+                    return tB - tA;
+                });
                 
-                snapshot.forEach((docSnap) => {
-                    const order = docSnap.data();
-                    order.docId = docSnap.id;
+                docsList.forEach(({ id, data: order }) => {
+                    order.docId = id;
                     
                     const isFood = order.type === 'food';
+                    const st = (order.status || 'Requested').toLowerCase();
+                    const isCompleted = ['completed', 'delivered'].includes(st);
                     
                     // calculate time diff safely
                     let timeStr = 'Just now';
+                    let dateDisplay = 'Today';
                     if (order.timestamp) {
-                        const mins = Math.floor((Date.now() - order.timestamp.toMillis()) / 60000);
-                        timeStr = mins < 1 ? 'Just now' : `Requested ${mins}m ago`;
-                    }
-                    
-                    const card = document.createElement('div');
-                    card.className = 'order-card glass-panel';
-                    if (!isFood) card.style.borderLeftColor = '#76baf5';
-                    
-                    const isDelivery = order.fulfillment === 'delivery';
-                    
-                    let footerContent = '';
-                    if (isDelivery) {
-                        footerContent = `
-                            <div class="delivery-badge">
-                                <i data-feather="truck" style="width:14px;"></i> Delivery to ${order.location || 'Block C'}
-                            </div>
-                            <div class="pin-display">
-                                PIN: <span class="pin-code">${order.pin || '0000'}</span>
-                            </div>
-                        `;
-                    } else {
-                        footerContent = `
-                            <div class="delivery-badge" style="background: rgba(164, 118, 245, 0.1); color: var(--primary-color);">
-                                <i data-feather="user" style="width:14px;"></i> Self Pickup
-                            </div>
-                            <div class="pin-display" style="border-color: rgba(164, 118, 245, 0.3);">
-                                PIN: <span class="pin-code">${order.pin || '0000'}</span>
-                            </div>
-                        `;
+                        try {
+                            const orderDate = order.timestamp.toDate();
+                            const now = new Date();
+                            const diffDays = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+                            if (diffDays === 0) dateDisplay = 'Today';
+                            else if (diffDays === 1) dateDisplay = 'Yesterday';
+                            else dateDisplay = orderDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                            
+                            const mins = Math.floor((Date.now() - orderDate.getTime()) / 60000);
+                            timeStr = mins < 1 ? 'Just now' : `Requested ${mins}m ago`;
+                        } catch(e) {}
                     }
 
-                    // compute visual progress width
-                    let progressWidth = '25%'; // Requested
-                    const st = order.status.toLowerCase();
-                    if (isDelivery) {
-                        if (st === 'preparing' || st === 'accepted') progressWidth = '50%';
-                        else if (st === 'ready') progressWidth = '75%';
-                        else if (st === 'out for delivery' || st === 'completed' || st === 'delivered') progressWidth = '100%';
-                    } else {
-                        if (st === 'accepted' || st === 'printing') progressWidth = '50%';
-                        else if (st === 'preparing' || st === 'finishing') progressWidth = '75%';
-                        else if (st === 'ready' || st === 'ready for pickup' || st === 'completed') progressWidth = '100%';
-                    }
-
-                    card.innerHTML = `
-                        <div class="order-header">
-                            <div class="order-id-group">
-                                <span class="order-number">#${order.orderId}</span>
-                                <span class="order-timestamp">${timeStr}</span>
-                            </div>
-                            <span class="status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}">${order.status}</span>
-                        </div>
-                        
-                        <div class="order-progress-container">
-                            <div class="progress-labels">
-                                <span>Requested</span>
-                                <span>${isDelivery ? 'Preparing' : (isFood ? 'Accepted' : 'Printing')}</span>
-                                <span class="${progressWidth === '75%' || progressWidth === '100%' ? 'active' : ''}">${isDelivery ? 'Ready' : (isFood ? 'Preparing' : 'Finishing')}</span>
-                                <span class="${progressWidth === '100%' ? 'active' : ''}">${isDelivery ? 'Delivered' : 'Ready'}</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width: ${progressWidth}; transition: width 0.5s ease-out;"></div>
-                            </div>
-                        </div>
-
-                        <div class="order-details-summary">
-                            <p>${order.items}</p>
-                            <div class="order-footer">
-                                ${footerContent}
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-outline" style="width: 100%; margin-top: 15px;" onclick="cancelOrder('${order.docId}')">Cancel Order</button>
+                    // Render to Booking History Table
+                    const serviceName = isFood ? 'Food (' + (order.vendorName || 'Canteen') + ')' : 'Xerox Printing';
+                    const amountDisplay = order.amount ? `₹${parseFloat(order.amount).toFixed(2)}` : (order.totalPrice ? `₹${order.totalPrice}` : '₹--');
+                    const statusClass = isCompleted ? 'ready' : (st.replace(/\s+/g, '-'));
+                    
+                    historyHtml += `
+                        <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 12px; font-weight: 500;">#${order.orderId || docSnap.id.substring(0, 6)}</td>
+                            <td style="padding: 12px;">${serviceName}</td>
+                            <td style="padding: 12px; color: var(--text-muted);">${dateDisplay}</td>
+                            <td style="padding: 12px;">${amountDisplay}</td>
+                            <td style="padding: 12px;"><span class="status-badge ${statusClass}">${order.status || 'Requested'}</span></td>
+                        </tr>
                     `;
-                    container.appendChild(card);
+
+                    // Render Active Orders Card if not completed
+                    if (!isCompleted) {
+                        activeCount++;
+                        const card = document.createElement('div');
+                        card.className = 'order-card glass-panel';
+                        if (!isFood) card.style.borderLeftColor = '#76baf5';
+                        
+                        const isDelivery = order.fulfillment === 'delivery';
+                        
+                        let footerContent = '';
+                        if (isDelivery) {
+                            footerContent = `
+                                <div class="delivery-badge">
+                                    <i data-feather="truck" style="width:14px;"></i> Delivery to ${order.location || 'Block C'}
+                                </div>
+                                <div class="pin-display">
+                                    PIN: <span class="pin-code">${order.pin || '0000'}</span>
+                                </div>
+                            `;
+                        } else {
+                            footerContent = `
+                                <div class="delivery-badge" style="background: rgba(164, 118, 245, 0.1); color: var(--primary-color);">
+                                    <i data-feather="user" style="width:14px;"></i> Self Pickup
+                                </div>
+                                <div class="pin-display" style="border-color: rgba(164, 118, 245, 0.3);">
+                                    PIN: <span class="pin-code">${order.pin || '0000'}</span>
+                                </div>
+                            `;
+                        }
+
+                        // compute visual progress width
+                        let progressWidth = '25%'; // Requested
+                        if (isDelivery) {
+                            if (st === 'preparing' || st === 'accepted') progressWidth = '50%';
+                            else if (st === 'ready') progressWidth = '75%';
+                            else if (st === 'out for delivery' || st === 'completed' || st === 'delivered') progressWidth = '100%';
+                        } else {
+                            if (st === 'accepted' || st === 'printing') progressWidth = '50%';
+                            else if (st === 'preparing' || st === 'finishing') progressWidth = '75%';
+                            else if (st === 'ready' || st === 'ready for pickup' || st === 'completed') progressWidth = '100%';
+                        }
+
+                        card.innerHTML = `
+                            <div class="order-header">
+                                <div class="order-id-group">
+                                    <span class="order-number">#${order.orderId || docSnap.id.substring(0,6)}</span>
+                                    <span class="order-timestamp">${timeStr}</span>
+                                </div>
+                                <span class="status-badge ${st.replace(/\s+/g, '-')}">${order.status || 'Requested'}</span>
+                            </div>
+                            
+                            <div class="order-progress-container">
+                                <div class="progress-labels">
+                                    <span>Requested</span>
+                                    <span>${isDelivery ? 'Preparing' : (isFood ? 'Accepted' : 'Printing')}</span>
+                                    <span class="${progressWidth === '75%' || progressWidth === '100%' ? 'active' : ''}">${isDelivery ? 'Ready' : (isFood ? 'Preparing' : 'Finishing')}</span>
+                                    <span class="${progressWidth === '100%' ? 'active' : ''}">${isDelivery ? 'Delivered' : 'Ready'}</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${progressWidth}; transition: width 0.5s ease-out;"></div>
+                                </div>
+                            </div>
+
+                            <div class="order-details-summary">
+                                <p>${order.items || 'Standard Order'}</p>
+                                <div class="order-footer">
+                                    ${footerContent}
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline" style="width: 100%; margin-top: 15px;" onclick="cancelOrder('${order.docId}')">Cancel Order</button>
+                        `;
+                        container.appendChild(card);
+                    }
                 });
+                
+                if (activeCount === 0 && container) {
+                    container.innerHTML = '<p style="color: #a1a1aa;">No active orders right now.</p>';
+                }
+                
+                if (historyBody) {
+                    historyBody.innerHTML = historyHtml || '<tr><td colspan="5" style="text-align: center; color: #a1a1aa; padding: 24px;">No past booking history found.</td></tr>';
+                }
+
                 if (typeof feather !== 'undefined') feather.replace();
             });
         };
@@ -253,14 +307,33 @@
             }
         };
 
-        // We listen to auth here to get the UID for the query
-        auth.onAuthStateChanged((user) => {
+        // We listen to auth here to get the UID for the query and check admin
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
                 window.renderActiveOrders(user);
+                
+                try {
+                    const uSnap = await getDoc(doc(db, 'users', user.uid));
+                    const role = uSnap.exists() ? uSnap.data().role : null;
+                    const isAdmin = role === 'admin' || 
+                                    user.email === 'admin.test@campus.com' || 
+                                    user.email === 'admin@gmail.com' || 
+                                    user.email === 'admin@campus.com' ||
+                                    (user.email && user.email.toLowerCase().includes('admin'));
+
+                    if (isAdmin) {
+                        const navBtn = document.getElementById('nav-admin-btn');
+                        if (navBtn) navBtn.style.display = 'inline-flex';
+                        const adminCard = document.getElementById('admin-service-card');
+                        if (adminCard) adminCard.style.display = 'block';
+                        if (typeof feather !== 'undefined') feather.replace();
+                    }
+                } catch(e) {
+                    console.error("Error checking role in home:", e);
+                }
             }
         });
     </script>
-    <script type="module" src="script.js"></script>
-    <script type="module" src="home.js"></script>
+    <script type="module" src="home.js?v=10"></script>
 </body>
 </html>
