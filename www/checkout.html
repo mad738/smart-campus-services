@@ -224,14 +224,666 @@
         .tracker-step.active span {
             color: #fff;
         }
+
+        /* ===================================================
+           SNITCH / GOKWIK STYLE 1-CLICK FAST CHECKOUT (SANDBOX)
+           =================================================== */
+        .pg-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 6, 12, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 10000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 14px;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .pg-backdrop.active {
+            display: flex;
+            opacity: 1;
+        }
+        .pg-modal {
+            width: 100%;
+            max-width: 490px;
+            max-height: calc(100vh - 40px);
+            margin: auto 0;
+            background: #0f1019;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 50px rgba(164, 118, 245, 0.22);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: #f3f4f6;
+            transform: scale(0.96) translateY(10px);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Outfit', sans-serif;
+        }
+        .pg-backdrop.active .pg-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Snitch / GoKwik Header */
+        .snitch-topbar {
+            background: #151624;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .snitch-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .snitch-lightning-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+        }
+        .snitch-brand-title {
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .snitch-brand-tag {
+            font-size: 9px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .snitch-close-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .snitch-close-btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Discount / Offers Bar (Snitch style) */
+        .snitch-offer-banner {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(164, 118, 245, 0.15));
+            border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 8px 16px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fbbf24;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* User Profile / Address Bar (GoKwik style) */
+        .snitch-user-row {
+            padding: 9px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .snitch-chip-verified {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #e5e7eb;
+            font-weight: 500;
+        }
+        .snitch-chip-verified i {
+            color: #10b981;
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Body & 1-Click UPI App Cards (The Snitch signature) */
+        .snitch-body {
+            padding: 14px 18px;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(164, 118, 245, 0.25) transparent;
+        }
+        .snitch-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .snitch-body::-webkit-scrollbar-thumb {
+            background: rgba(164, 118, 245, 0.25);
+            border-radius: 999px;
+        }
+
+        .snitch-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .snitch-upi-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .snitch-upi-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        .snitch-upi-card:hover {
+            border-color: #a476f5;
+            background: rgba(164, 118, 245, 0.1);
+            transform: translateY(-1px);
+        }
+        .snitch-upi-card.featured {
+            border-color: rgba(164, 118, 245, 0.5);
+            background: linear-gradient(135deg, rgba(164, 118, 245, 0.12), rgba(99, 102, 241, 0.06));
+        }
+        .snitch-upi-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .snitch-app-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+        .snitch-app-phonepe { background: #5f259f; color: #fff; }
+        .snitch-app-gpay { background: #1a1a1a; color: #4285f4; border: 1px solid rgba(255,255,255,0.1); }
+        .snitch-app-paytm { background: #002e6e; color: #00b9f5; }
+        .snitch-app-qr { background: #1f2937; color: #10b981; }
+
+        .snitch-upi-badge {
+            font-size: 9px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+        .snitch-tap-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #a476f5;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Collapsible Other Methods (Cards, NetBanking, Campus Wallet) */
+        .snitch-other-methods {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+        .snitch-accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .snitch-accordion-header:hover {
+            color: #fff;
+        }
+        .snitch-accordion-body {
+            display: none;
+            padding: 10px 0;
+            animation: pgFadeIn 0.2s ease;
+        }
+        .snitch-accordion-body.open {
+            display: block;
+        }
+
+        /* GoKwik / Snitch Sticky Bottom Bar */
+        .snitch-footer {
+            background: #141522;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 18px;
+            flex-shrink: 0;
+        }
+        .snitch-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .snitch-total-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .snitch-original-price {
+            font-size: 12px;
+            text-decoration: line-through;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .snitch-pay-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            transition: all 0.2s;
+        }
+        .snitch-pay-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+        }
+        .snitch-sec-seal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 9px;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* 3D-Secure / Processing / Success States */
+        .pg-stage-view {
+            padding: 36px 20px;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 380px;
+        }
+        .pg-stage-view.active {
+            display: flex;
+            animation: pgFadeIn 0.3s ease;
+        }
+        .pg-otp-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 18px 0;
+        }
+        .pg-otp-digit {
+            width: 42px;
+            height: 48px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.45);
+            border: 1.5px solid rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+        .pg-otp-digit:focus {
+            border-color: #a476f5;
+            box-shadow: 0 0 0 2px rgba(164, 118, 245, 0.3);
+        }
+        .pg-spinner {
+            width: 54px;
+            height: 54px;
+            border: 4px solid rgba(164, 118, 245, 0.2);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: pgSpin 0.85s infinite linear;
+            margin-bottom: 20px;
+        }
+        @keyframes pgSpin { to { transform: rotate(360deg); } }
+        @keyframes pgFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pg-success-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+            margin-bottom: 16px;
+            animation: pgPulseSuccess 1.5s infinite;
+        }
+        /* ===================================================
+           NATIVE MOBILE BOTTOM-SHEET DRAWER & MOBILE VIEW
+           =================================================== */
+        .snitch-drag-pill {
+            display: none;
+            width: 44px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            margin: 10px auto 4px auto;
+            cursor: grab;
+            transition: background 0.2s;
+        }
+        .snitch-drag-pill:hover,
+        .snitch-drag-pill:active {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .mobile-back-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mobile-back-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        /* Mobile Sticky Bottom Checkout Bar */
+        .mobile-sticky-checkout-bar {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            body.dashboard-body {
+                padding-bottom: 86px; /* Room for sticky bottom bar */
+            }
+
+            .mobile-back-btn {
+                display: flex;
+            }
+
+            .navbar {
+                padding: 12px 16px;
+            }
+
+            .container {
+                padding: 12px 14px;
+            }
+
+            /* Main checkout page adjustments on phone screens */
+            .checkout-layout {
+                gap: 16px;
+                margin-top: 8px;
+            }
+            .section-header {
+                font-size: 17px;
+                margin-top: 24px !important;
+                margin-bottom: 14px;
+                padding-bottom: 10px;
+            }
+            .order-item {
+                padding: 10px 0;
+            }
+            .item-img {
+                width: 44px;
+                height: 44px;
+            }
+            .item-name {
+                font-size: 14px;
+            }
+            .item-qty {
+                font-size: 12px;
+            }
+            .item-price {
+                font-size: 14px;
+            }
+            .option-box {
+                padding: 12px 14px;
+                border-radius: 14px;
+            }
+            .option-box .option-icon {
+                width: 36px;
+                height: 36px;
+            }
+            .summary-panel {
+                padding: 18px 14px;
+                border-radius: 16px;
+            }
+            .status-tracker {
+                max-width: 100%;
+                margin: 20px auto;
+                padding: 0 8px;
+            }
+            .step-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+            }
+            .tracker-step span {
+                font-size: 11px;
+            }
+
+            /* Sticky Mobile Action Bar */
+            .mobile-sticky-checkout-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(15, 16, 25, 0.94);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.12);
+                padding: 10px 16px max(12px, env(safe-area-inset-bottom, 12px)) 16px;
+                z-index: 999;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.7);
+                animation: mobileBarSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .mobile-sticky-checkout-bar.hide {
+                display: none !important;
+            }
+            @keyframes mobileBarSlideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+            .mobile-sticky-info {
+                display: flex;
+                flex-direction: column;
+            }
+            .mobile-sticky-label {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                color: #9ca3af;
+                font-weight: 700;
+            }
+            .mobile-sticky-price {
+                font-size: 21px;
+                font-weight: 800;
+                color: #fff;
+                letter-spacing: -0.5px;
+                line-height: 1.1;
+            }
+            .mobile-sticky-btn {
+                background: linear-gradient(135deg, #a476f5 0%, #7033ff 100%);
+                color: #fff;
+                border: none;
+                border-radius: 12px;
+                padding: 12px 20px;
+                font-size: 14px;
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                box-shadow: 0 4px 16px rgba(164, 118, 245, 0.4);
+                transition: transform 0.15s ease;
+                font-family: inherit;
+            }
+            .mobile-sticky-btn:active {
+                transform: scale(0.96);
+            }
+
+            /* Snitch 1-Click Gateway Mobile Bottom-Sheet Drawer */
+            .pg-backdrop {
+                padding: 0 !important;
+                align-items: flex-end !important; /* Bottom-sheet drawer on mobile */
+                justify-content: center !important;
+            }
+            .pg-modal {
+                max-width: 100% !important;
+                width: 100% !important;
+                border-radius: 24px 24px 0 0 !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-bottom: none !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+                max-height: 92vh !important;
+                margin: 0 !important;
+                transform: translateY(100%) !important;
+                transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(164, 118, 245, 0.25) !important;
+                touch-action: pan-y;
+            }
+            .pg-backdrop.active .pg-modal {
+                transform: translateY(0) !important;
+            }
+            .snitch-drag-pill {
+                display: block; /* Visible drag handle on mobile */
+            }
+            .snitch-topbar {
+                padding: 6px 16px 12px 16px;
+            }
+            .snitch-brand-title {
+                font-size: 13px;
+            }
+            .snitch-offer-banner {
+                padding: 8px 14px;
+                font-size: 10.5px;
+            }
+            .snitch-user-row {
+                padding: 8px 14px;
+                font-size: 11px;
+            }
+            .snitch-body {
+                padding: 12px 14px;
+                max-height: calc(92vh - 200px);
+                -webkit-overflow-scrolling: touch;
+            }
+            .snitch-upi-card {
+                padding: 11px 12px;
+            }
+            .snitch-upi-card:active {
+                transform: scale(0.98);
+                background: rgba(164, 118, 245, 0.18);
+            }
+            .snitch-app-logo {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+            .snitch-footer {
+                padding: 12px 16px max(16px, env(safe-area-inset-bottom, 16px)) 16px;
+            }
+            .snitch-pay-btn {
+                padding: 14px;
+                font-size: 15px;
+                border-radius: 12px;
+            }
+            .snitch-pay-btn:active {
+                transform: scale(0.98);
+            }
+            .pg-otp-digit {
+                width: clamp(36px, 11vw, 44px);
+                height: clamp(44px, 13vw, 50px);
+                font-size: 18px;
+            }
+            .pg-stage-view {
+                padding: 24px 16px;
+                min-height: 320px;
+            }
+        }
     </style>
+
 </head>
 <body class="dashboard-body">
     <!-- Header -->
     <header class="navbar">
-        <div class="logo cursor-pointer" onclick="window.location.href='home.html'">
-            <i data-feather="hexagon" class="text-primary"></i>
-            <span>SmartCampus</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="mobile-back-btn" onclick="if(window.history.length > 1) { window.history.back(); } else { window.location.href='home.html'; }" title="Go Back">
+                <i data-feather="arrow-left"></i>
+            </button>
+            <div class="logo cursor-pointer" onclick="window.location.href='home.html'">
+                <i data-feather="hexagon" class="text-primary"></i>
+                <span>SmartCampus</span>
+            </div>
         </div>
         <div class="user-profile">
             <img src="https://ui-avatars.com/api/?name=Alex+Student&background=a476f5&color=fff" alt="User Profile">
@@ -433,6 +1085,319 @@
             </div>
         </div>
 
+        <!-- ===================================================
+             SNITCH / GOKWIK STYLE 1-CLICK FAST CHECKOUT (SANDBOX)
+             =================================================== -->
+        <div id="pg-modal-backdrop" class="pg-backdrop">
+            <div class="pg-modal">
+                <div class="snitch-drag-pill"></div>
+                <!-- Snitch / GoKwik Top Bar -->
+                <div class="snitch-topbar">
+                    <div class="snitch-brand">
+                        <div class="snitch-lightning-badge">
+                            <i data-feather="zap"></i>
+                        </div>
+                        <div>
+                            <div class="snitch-brand-title">
+                                SNITCH FAST CHECKOUT
+                                <span class="snitch-brand-tag">GOKWIK 1-CLICK</span>
+                            </div>
+                            <div style="font-size:10px; color:#9ca3af; display:flex; align-items:center; gap:4px;">
+                                <i data-feather="shield" style="width:10px;height:10px;color:#10b981;"></i> 100% Safe • RBI & NPCI Verified
+                            </div>
+                        </div>
+                    </div>
+                    <button class="snitch-close-btn" onclick="window.closePaymentGateway()" title="Cancel Checkout">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+
+                <!-- Snitch Offers / Savings Banner -->
+                <div class="snitch-offer-banner">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span>🏷️</span>
+                        <span>CAMPUS SPECIAL: <strong>₹5.00 INSTANT DISCOUNT APPLIED</strong></span>
+                    </div>
+                    <span style="font-size:10px; background:rgba(245,158,11,0.25); padding:2px 6px; border-radius:4px; font-weight:700;">SAVED</span>
+                </div>
+
+                <!-- Verified Phone & Address Strip (GoKwik signature) -->
+                <div class="snitch-user-row">
+                    <div class="snitch-chip-verified">
+                        <i data-feather="check-circle"></i>
+                        <span>+91 98765 43210</span>
+                        <span style="color:#9ca3af;">(Alex Student)</span>
+                    </div>
+                    <div style="color:#a476f5; font-weight:600; cursor:pointer;" onclick="window.editAddressAlert()">
+                        📍 Hostel Block C, 402 <span style="font-size:10px; color:#9ca3af;">[Edit]</span>
+                    </div>
+                </div>
+
+                <!-- MAIN PAYMENT METHODS VIEW -->
+                <div id="pg-methods-view">
+                    <div class="snitch-body">
+                        <!-- Top 1-Click UPI Intent List (Snitch hallmark) -->
+                        <div class="snitch-section-title">
+                            <span>RECOMMENDED (1-TAP INSTANT APPROVE)</span>
+                            <span style="color:#10b981; font-size:10px;">⚡ ZERO WAITING</span>
+                        </div>
+
+                        <div class="snitch-upi-grid">
+                            <!-- PhonePe -->
+                            <div class="snitch-upi-card featured" onclick="window.snitchTriggerOneClick('PhonePe')">
+                                <div class="snitch-upi-left">
+                                    <div class="snitch-app-logo snitch-app-phonepe">पे</div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px; color:#fff;">
+                                            PhonePe UPI
+                                            <span class="snitch-upi-badge">⚡ FASTEST</span>
+                                        </div>
+                                        <div style="font-size:11px; color:#9ca3af;">Tap to approve on PhonePe</div>
+                                    </div>
+                                </div>
+                                <div class="snitch-tap-text">
+                                    <span>Pay <span class="snitch-pay-amt-inline">₹6.00</span></span>
+                                    <i data-feather="chevron-right" style="width:14px;height:14px;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Google Pay -->
+                            <div class="snitch-upi-card" onclick="window.snitchTriggerOneClick('Google Pay')">
+                                <div class="snitch-upi-left">
+                                    <div class="snitch-app-logo snitch-app-gpay">G</div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px; color:#fff;">Google Pay</div>
+                                        <div style="font-size:11px; color:#9ca3af;">Direct UPI intent link</div>
+                                    </div>
+                                </div>
+                                <div class="snitch-tap-text">
+                                    <span>Pay <span class="snitch-pay-amt-inline">₹6.00</span></span>
+                                    <i data-feather="chevron-right" style="width:14px;height:14px;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Paytm -->
+                            <div class="snitch-upi-card" onclick="window.snitchTriggerOneClick('Paytm')">
+                                <div class="snitch-upi-left">
+                                    <div class="snitch-app-logo snitch-app-paytm">P</div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px; color:#fff;">Paytm UPI / Wallet</div>
+                                        <div style="font-size:11px; color:#9ca3af;">Instant 1-Click PIN</div>
+                                    </div>
+                                </div>
+                                <div class="snitch-tap-text">
+                                    <span>Pay <span class="snitch-pay-amt-inline">₹6.00</span></span>
+                                    <i data-feather="chevron-right" style="width:14px;height:14px;"></i>
+                                </div>
+                            </div>
+
+                            <!-- QR Code & Any UPI ID -->
+                            <div class="snitch-upi-card" onclick="window.toggleAccordion('qr-accordion')">
+                                <div class="snitch-upi-left">
+                                    <div class="snitch-app-logo snitch-app-qr">
+                                        <i data-feather="camera" style="width:18px;height:18px;"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px; color:#fff;">Scan Dynamic QR or Enter UPI ID</div>
+                                        <div style="font-size:11px; color:#9ca3af;">CRED, BHIM, WhatsApp Pay & any app</div>
+                                    </div>
+                                </div>
+                                <i data-feather="chevron-down" style="width:16px;height:16px;color:#9ca3af;"></i>
+                            </div>
+
+                            <!-- Expandable QR view -->
+                            <div id="qr-accordion" class="snitch-accordion-body">
+                                <div style="display:flex; flex-direction:column; align-items:center; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+                                    <div style="width:140px; height:140px; background:#fff; padding:8px; border-radius:10px; margin-bottom:10px; position:relative;">
+                                        <svg viewBox="0 0 100 100" fill="#111827" style="width:100%;height:100%;">
+                                            <rect x="5" y="5" width="26" height="26" rx="4" fill="none" stroke="#111827" stroke-width="4"/>
+                                            <rect x="11" y="11" width="14" height="14" rx="2" fill="#111827"/>
+                                            <rect x="69" y="5" width="26" height="26" rx="4" fill="none" stroke="#111827" stroke-width="4"/>
+                                            <rect x="75" y="11" width="14" height="14" rx="2" fill="#111827"/>
+                                            <rect x="5" y="69" width="26" height="26" rx="4" fill="none" stroke="#111827" stroke-width="4"/>
+                                            <rect x="11" y="75" width="14" height="14" rx="2" fill="#111827"/>
+                                            <rect x="38" y="38" width="10" height="10" rx="2" fill="#10b981"/>
+                                            <rect x="42" y="12" width="16" height="8" fill="#111827"/>
+                                            <rect x="12" y="42" width="16" height="8" fill="#111827"/>
+                                            <rect x="68" y="42" width="16" height="8" fill="#111827"/>
+                                            <rect x="42" y="72" width="16" height="8" fill="#111827"/>
+                                        </svg>
+                                    </div>
+                                    <div style="font-size:11px; color:#9ca3af; margin-bottom:8px;">Scan with ANY banking / UPI app</div>
+                                    <div style="display:flex; width:100%; gap:8px;">
+                                        <input type="text" id="snitch-vpa-input" class="pg-input" value="student@oksbi" placeholder="Enter UPI ID (e.g. mobile@upi)" style="padding:8px 12px; font-size:12px;">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="window.snitchTriggerOneClick('Custom UPI')" style="white-space:nowrap; padding:0 12px; font-size:12px;">
+                                            Pay
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible Other Payment Options -->
+                        <div class="snitch-other-methods">
+                            <!-- Card option -->
+                            <div class="snitch-accordion-header" onclick="window.toggleAccordion('cards-accordion')">
+                                <span style="display:flex; align-items:center; gap:8px;">
+                                    <i data-feather="credit-card" style="width:16px;height:16px;"></i> Cards (Debit / Credit)
+                                </span>
+                                <i data-feather="chevron-down" style="width:14px;height:14px;"></i>
+                            </div>
+                            <div id="cards-accordion" class="snitch-accordion-body">
+                                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                        <span style="font-size:12px; color:#fff; font-weight:600;">Saved Campus Card: •••• 8821</span>
+                                        <span style="font-size:11px; color:#10b981; font-weight:700;">VISA</span>
+                                    </div>
+                                    <div style="display:flex; gap:8px;">
+                                        <input type="password" placeholder="CVV (•••)" value="829" class="pg-input" style="max-width:90px; padding:8px; font-size:12px; text-align:center;">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="window.snitchTriggerOneClick('Saved Card')" style="flex:1; font-size:12px;">
+                                            Pay with Saved Card
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Campus Wallet option -->
+                            <div class="snitch-accordion-header" onclick="window.toggleAccordion('wallet-accordion')">
+                                <span style="display:flex; align-items:center; gap:8px;">
+                                    <i data-feather="award" style="width:16px;height:16px;color:#a476f5;"></i> Campus Smart ID Wallet
+                                </span>
+                                <span style="font-size:11px; color:#10b981; font-weight:700;">Bal: ₹250.00</span>
+                            </div>
+                            <div id="wallet-accordion" class="snitch-accordion-body">
+                                <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.2); border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <div style="font-weight:700; font-size:13px; color:#fff;">Student Cafeteria Balance</div>
+                                        <div style="font-size:11px; color:#9ca3af;">Deductible: <strong class="snitch-pay-amt-inline" style="color:#fff;">₹6.00</strong></div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="window.snitchTriggerOneClick('Campus Wallet')" style="background:#10b981; font-size:12px;">
+                                        1-Tap Deduct
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Snitch / GoKwik Sticky Bottom Footer -->
+                    <div class="snitch-footer">
+                        <div class="snitch-price-row">
+                            <div>
+                                <span style="font-size:11px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px; display:block;">Total Amount</span>
+                                <div class="snitch-total-price">
+                                    <span id="snitch-final-amt">₹6.00</span>
+                                    <span class="snitch-original-price" id="snitch-orig-amt">₹11.00</span>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span style="font-size:10px; color:#10b981; font-weight:700; background:rgba(16,185,129,0.12); padding:3px 8px; border-radius:999px;">
+                                    🎉 ₹5.00 CAMPUS CASH SAVED
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="snitch-pay-btn" id="snitch-master-pay-btn" onclick="window.snitchTriggerOneClick('PhonePe UPI')">
+                            <i data-feather="zap" style="width:18px;height:18px;"></i>
+                            <span id="snitch-btn-text">PAY ₹6.00 WITH 1-CLICK</span>
+                        </button>
+
+                        <div class="snitch-sec-seal">
+                            <i data-feather="lock" style="width:11px;height:11px;color:#10b981;"></i>
+                            <span>Powered by GoKwik • 256-Bit SSL • PCI-DSS Certified</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STAGE 2: 3D-SECURE 1-CLICK AUTHENTICATION -->
+                <div id="pg-otp-view" class="pg-stage-view">
+                    <div style="display:inline-flex; align-items:center; gap:8px; padding:5px 12px; border-radius:999px; background:rgba(245,158,11,0.15); color:#f59e0b; font-size:11px; font-weight:700; margin-bottom:14px;">
+                        <i data-feather="zap" style="width:13px;height:13px;"></i> GOKWIK FAST-TRACK AUTHENTICATION
+                    </div>
+                    <h3 style="font-size:20px; font-weight:800; margin-bottom:4px; color:#fff;">Approving 1-Click Payment</h3>
+                    <p style="font-size:12px; color:#9ca3af; max-width:320px; margin-bottom:16px;">
+                        Verifying instant authorization token for <strong style="color:#fff;" id="snitch-auth-method-label">PhonePe UPI</strong>.
+                    </p>
+
+                    <div style="display:flex; justify-content:center; margin-bottom:10px;">
+                        <button type="button" onclick="window.autofillOtp()" class="btn btn-sm btn-outline" style="font-size:11px; color:#a476f5; border-color:rgba(164,118,245,0.4); padding:3px 10px;">
+                            ⚡ Autofill PIN (492018)
+                        </button>
+                    </div>
+
+                    <div class="pg-otp-row">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="4" oninput="window.handleOtpInput(this, 0)">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="9" oninput="window.handleOtpInput(this, 1)">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="2" oninput="window.handleOtpInput(this, 2)">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="0" oninput="window.handleOtpInput(this, 3)">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="1" oninput="window.handleOtpInput(this, 4)">
+                        <input type="text" class="pg-otp-digit" maxlength="1" value="8" oninput="window.handleOtpInput(this, 5)">
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:12px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="window.backToPgMethods()" style="padding:10px 18px;">
+                            Cancel
+                        </button>
+                        <button type="button" class="snitch-pay-btn" onclick="window.confirmBankAuthorization()" style="padding:10px 22px; font-size:14px; width:auto;">
+                            <i data-feather="check"></i> Authorize & Pay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STAGE 3: GOKWIK FAST-TRACK PROCESSING -->
+                <div id="pg-processing-view" class="pg-stage-view">
+                    <div class="pg-spinner"></div>
+                    <h3 style="font-size:19px; font-weight:800; margin-bottom:6px; color:#fff;" id="pg-proc-title">
+                        Processing 1-Click Payment...
+                    </h3>
+                    <p style="font-size:12px; color:#9ca3af; max-width:320px;" id="pg-proc-subtitle">
+                        Securing GoKwik instant authorization with issuer bank.
+                    </p>
+                    <div style="margin-top:16px; font-size:10px; color:#6b7280; font-family:monospace;" id="pg-proc-ref">
+                        GOKWIK-INTENT-ID: gwk_8920194821
+                    </div>
+                </div>
+
+                <!-- STAGE 4: SNITCH SUCCESS CELEBRATION -->
+                <div id="pg-success-view" class="pg-stage-view">
+                    <div class="pg-success-icon">
+                        <i data-feather="check" style="width:38px;height:38px;"></i>
+                    </div>
+                    <h3 style="font-size:22px; font-weight:800; margin-bottom:4px; color:#10b981;">
+                        1-Click Payment Successful!
+                    </h3>
+                    <p style="font-size:13px; color:#d1d5db; margin-bottom:14px;">
+                        Amount: <strong style="color:#fff;" id="pg-success-amount">₹6.00</strong> paid to <strong style="color:#a476f5;">Smart Campus Services</strong>
+                    </p>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px 16px; margin-bottom:18px; font-size:12px; text-align:left; min-width:280px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span style="color:#9ca3af;">GoKwik Ref:</span>
+                            <strong style="color:#fff; font-family:monospace;" id="pg-success-txnid">GWK-98421804</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:#9ca3af;">Bank UTR:</span>
+                            <strong style="color:#10b981; font-family:monospace;" id="pg-success-utr">UPI/8291048201</strong>
+                        </div>
+                    </div>
+                    <div style="font-size:11px; color:#9ca3af; display:flex; align-items:center; gap:6px;">
+                        <i data-feather="loader" class="pg-spinner" style="width:12px;height:12px;border-width:2px;margin:0;"></i>
+                        Generating queue token & pickup verification PIN...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sticky Mobile Bottom Checkout Bar -->
+        <div id="mobile-sticky-checkout" class="mobile-sticky-checkout-bar">
+            <div class="mobile-sticky-info">
+                <span class="mobile-sticky-label">TOTAL TO PAY</span>
+                <span class="mobile-sticky-price" id="mobile-sticky-total">₹6.00</span>
+            </div>
+            <button class="mobile-sticky-btn" onclick="window.processPayment()">
+                <span>Proceed to Pay</span>
+                <i data-feather="arrow-right"></i>
+            </button>
+        </div>
+
     </main>
 
     <script type="module">
@@ -441,10 +1406,23 @@
         window.feather = feather;
         feather.replace();
 
+        // Expose immediately
+        window.processPayment = function() {
+            window.openPaymentGateway();
+        };
+
         window.renderCheckoutCart = function() {
-            const cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj')) || {};
+            let cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj'));
+            // If empty, auto-seed demo cart items so user can test checkout without getting stuck
+            if (!cartItems || Object.keys(cartItems).length === 0) {
+                cartItems = {
+                    'default_burger': { name: 'Classic Cheeseburger', price: 4.50, quantity: 1, vendorId: 'canteen_main', vendorName: 'Main Canteen' },
+                    'default_xerox': { name: 'Assignment_Final_Draft.pdf', price: 1.20, quantity: 1, vendorId: 'xerox_main', vendorName: 'Central Library Xerox' }
+                };
+                localStorage.setItem('smartCampusCartObj', JSON.stringify(cartItems));
+            }
+
             const orderList = document.querySelector('.order-list');
-            
             let total = 0;
             orderList.innerHTML = ''; 
             
@@ -472,10 +1450,6 @@
                 `;
             }
 
-            if (!hasItems) {
-                orderList.innerHTML = '<div style="padding: 20px 0; color: #a1a1aa; text-align: center;">Your cart is empty.</div>';
-            }
-
             const subtotalEl = document.getElementById('summary-subtotal');
             const totalEl = document.getElementById('summary-total');
             const payBtn = document.getElementById('pay-btn');
@@ -485,16 +1459,12 @@
 
             if (subtotalEl) subtotalEl.innerText = `₹${total.toFixed(2)}`;
             if (totalEl) totalEl.innerText = `₹${finalTotal.toFixed(2)}`;
+            const mobileStickyTotal = document.getElementById('mobile-sticky-total');
+            if (mobileStickyTotal) mobileStickyTotal.innerText = `₹${finalTotal.toFixed(2)}`;
             if (payBtn) {
                 payBtn.innerText = `Pay ₹${finalTotal.toFixed(2)}`;
-                if (!hasItems) {
-                    payBtn.disabled = true;
-                    payBtn.style.opacity = '0.5';
-                    payBtn.innerText = 'Cart Empty';
-                } else {
-                    payBtn.disabled = false;
-                    payBtn.style.opacity = '1';
-                }
+                payBtn.disabled = false;
+                payBtn.style.opacity = '1';
             }
             
             feather.replace();
@@ -538,107 +1508,385 @@
             }
         };
 
-        window.processPayment = async function() {
+        /* ===================================================
+           SIMULATED PAYMENT GATEWAY CONTROLLER (SANDBOX / DEMO)
+           =================================================== */
+        let currentPgTimer = null;
+        let selectedPaymentMethod = 'UPI';
+        let selectedBankName = 'State Bank of India';
+
+        function playSuccessChime() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(587.33, now); // D5
+                gain1.gain.setValueAtTime(0.18, now);
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.3);
+
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(880, now + 0.12); // A5
+                gain2.gain.setValueAtTime(0.22, now + 0.12);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(now + 0.12);
+                osc2.stop(now + 0.5);
+                if (navigator && navigator.vibrate) {
+                    navigator.vibrate([40, 60, 80]);
+                }
+            } catch (e) {
+                console.log('Chime playback skipped');
+            }
+        }
+
+        window.openPaymentGateway = function() {
             const payBtn = document.getElementById('pay-btn');
             if (payBtn && payBtn.disabled) return;
 
-            if (!auth.currentUser) {
-                if (window.showToast) window.showToast('Please log in first to place an order.', 'error');
-                setTimeout(() => window.location.href = 'index.html', 1500);
+            const currentUser = auth.currentUser || {
+                uid: 'student_test_alex',
+                email: 'student.test@campus.com',
+                displayName: 'Alex Student'
+            };
+
+            const cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj')) || {};
+            let subtotal = 0;
+            let hasItems = false;
+            for (let id in cartItems) {
+                hasItems = true;
+                subtotal += (cartItems[id].price * cartItems[id].quantity);
+            }
+            if (!hasItems) {
+                alert('Your cart is empty.');
                 return;
             }
 
-            document.body.style.cursor = 'wait';
-            
-            setTimeout(async () => {
-                document.body.style.cursor = 'default';
-                document.getElementById('checkout-flow').style.display = 'none';
-                document.getElementById('confirmation-state').style.display = 'block';
-                
-                const cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj')) || {};
-                
-                // Group cart items by vendorId (so each vendor gets ONLY their own ordered items)
-                const vendorOrders = {};
-                for (let id in cartItems) {
-                    const item = cartItems[id];
-                    const isXerox = id.startsWith('xerox_') || item.vendorType === 'xerox';
-                    const vId = isXerox ? 'xerox_main' : (item.vendorId || 'canteen_main');
-                    const vName = isXerox ? 'Xerox Center' : (item.vendorName || 'Campus Canteen');
-                    const vType = isXerox ? 'xerox' : 'food';
+            const totalAmount = (subtotal + 0.30).toFixed(2);
+            const originalAmount = (subtotal + 5.30).toFixed(2);
 
-                    if (!vendorOrders[vId]) {
-                        vendorOrders[vId] = {
-                            vendorId: vId,
-                            vendorName: vName,
-                            vendorType: vType,
-                            itemsList: [],
-                            totalAmount: 0
-                        };
-                    }
-                    vendorOrders[vId].itemsList.push(`${item.quantity}x ${item.name}`);
-                    vendorOrders[vId].totalAmount += (item.price * item.quantity);
-                }
-                
-                const isDelivery = document.getElementById('fulfillment-delivery') && document.getElementById('fulfillment-delivery').classList.contains('selected');
-                const fulfillmentType = isDelivery ? 'delivery' : 'pickup';
-                const locationVal = isDelivery ? (document.getElementById('delivery-location').value || 'Default Block') : 'Pickup Counter';
+            // Populate Snitch / GoKwik Values
+            const finalAmtEl = document.getElementById('snitch-final-amt');
+            const origAmtEl = document.getElementById('snitch-orig-amt');
+            const btnTextEl = document.getElementById('snitch-btn-text');
+            const successAmtEl = document.getElementById('pg-success-amount');
 
-                let createdOrdersHtml = '';
-                let firstOrderId = '';
+            if (finalAmtEl) finalAmtEl.innerText = `₹${totalAmount}`;
+            if (origAmtEl) origAmtEl.innerText = `₹${originalAmount}`;
+            if (btnTextEl) btnTextEl.innerText = `PAY ₹${totalAmount} WITH 1-CLICK`;
+            if (successAmtEl) successAmtEl.innerText = `₹${totalAmount}`;
 
-                for (let vId in vendorOrders) {
-                    const vo = vendorOrders[vId];
-                    const orderId = 'SC-' + Math.floor(1000 + Math.random() * 9000);
-                    if (!firstOrderId) firstOrderId = orderId;
-                    const orderPin = Math.floor(1000 + Math.random() * 9000).toString().padStart(4, '0');
-                    
-                    try {
-                        await addDoc(collection(db, 'orders'), {
-                            orderId: orderId,
-                            userId: auth.currentUser.uid,
-                            userEmail: auth.currentUser.email,
-                            userName: auth.currentUser.displayName || (auth.currentUser.email.split('@')[0]),
-                            vendorId: vo.vendorId,
-                            vendorName: vo.vendorName,
-                            type: vo.vendorType,
-                            items: vo.itemsList.join(', '),
-                            totalPrice: vo.totalAmount,
-                            timestamp: serverTimestamp(),
-                            createdAt: new Date().toISOString(),
-                            status: 'Requested',
-                            pin: orderPin,
-                            fulfillment: fulfillmentType,
-                            location: locationVal
-                        });
+            document.querySelectorAll('.snitch-pay-amt-inline').forEach(el => {
+                el.innerText = `₹${totalAmount}`;
+            });
 
-                        createdOrdersHtml += `
-                            <div style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 12px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-weight:700; color:var(--primary-color);">#${orderId}</span>
-                                    <span style="font-size:12px; padding:2px 8px; border-radius:4px; background:rgba(164,118,245,0.15); color:var(--primary-color); font-weight:600;">${vo.vendorName}</span>
-                                </div>
-                                <div style="font-size:14px; margin-top:6px; color:#fff;">${vo.itemsList.join(', ')}</div>
-                                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--text-muted);">
-                                    <span>Fulfillment: <strong style="color:#fff;">${fulfillmentType.toUpperCase()}</strong> (${locationVal})</span>
-                                    <span>Verification PIN: <strong style="color:#10b981; font-size:14px; letter-spacing:2px;">${orderPin}</strong></span>
-                                </div>
-                            </div>
-                        `;
-                    } catch (e) {
-                        console.error('Error saving order to Firestore: ', e);
-                    }
-                }
-                
-                const metaEl = document.getElementById('conf-order-meta');
-                if (metaEl) metaEl.innerText = `Order ID: #${firstOrderId} • Status: Requested`;
-                
-                const detailsEl = document.getElementById('conf-orders-details');
-                if (detailsEl) detailsEl.innerHTML = createdOrdersHtml;
-                
-                localStorage.removeItem('smartCampusCartObj');
-                if (typeof feather !== 'undefined') feather.replace();
-            }, 1000); 
+            // Hide mobile sticky bar so it doesn't overlap drawer
+            const stickyBar = document.getElementById('mobile-sticky-checkout');
+            if (stickyBar) stickyBar.classList.add('hide');
+
+            // Reset views
+            document.getElementById('pg-methods-view').style.display = 'block';
+            document.getElementById('pg-otp-view').classList.remove('active');
+            document.getElementById('pg-processing-view').classList.remove('active');
+            document.getElementById('pg-success-view').classList.remove('active');
+
+            // Open Backdrop
+            const backdrop = document.getElementById('pg-modal-backdrop');
+            backdrop.classList.add('active');
+
+            if (typeof feather !== 'undefined') feather.replace();
         };
+
+        window.toggleAccordion = function(accordionId) {
+            const el = document.getElementById(accordionId);
+            if (!el) return;
+            const isOpen = el.classList.contains('open');
+            document.querySelectorAll('.snitch-accordion-body').forEach(b => b.classList.remove('open'));
+            if (!isOpen) el.classList.add('open');
+            if (typeof feather !== 'undefined') feather.replace();
+        };
+
+        window.snitchTriggerOneClick = function(method) {
+            selectedPaymentMethod = method;
+            const methodLabel = document.getElementById('snitch-auth-method-label');
+            if (methodLabel) methodLabel.innerText = method;
+            window.initiatePaymentAuthentication();
+        };
+
+        window.editAddressAlert = function() {
+            const newLoc = prompt('Enter delivery room / campus block:', 'Hostel Block C, Room 402');
+            if (newLoc) {
+                const locInput = document.getElementById('delivery-location');
+                if (locInput) locInput.value = newLoc;
+                if (window.showToast) window.showToast(`Delivery updated: ${newLoc}`, 'success');
+            }
+        };
+
+        window.closePaymentGateway = function() {
+            const backdrop = document.getElementById('pg-modal-backdrop');
+            backdrop.classList.remove('active');
+            if (currentPgTimer) clearInterval(currentPgTimer);
+
+            // Restore mobile sticky bar
+            const stickyBar = document.getElementById('mobile-sticky-checkout');
+            if (stickyBar) stickyBar.classList.remove('hide');
+        };
+
+        window.initiatePaymentAuthentication = function() {
+            // Hide methods view, display OTP stage
+            document.getElementById('pg-methods-view').style.display = 'none';
+            const otpView = document.getElementById('pg-otp-view');
+            otpView.classList.add('active');
+
+            if (typeof feather !== 'undefined') feather.replace();
+        };
+
+        window.backToPgMethods = function() {
+            document.getElementById('pg-otp-view').classList.remove('active');
+            document.getElementById('pg-methods-view').style.display = 'block';
+            if (typeof feather !== 'undefined') feather.replace();
+        };
+
+        window.autofillOtp = function() {
+            const digits = ['4', '9', '2', '0', '1', '8'];
+            const inputs = document.querySelectorAll('.pg-otp-digit');
+            inputs.forEach((inp, idx) => {
+                inp.value = digits[idx] || '';
+            });
+        };
+
+        window.handleOtpInput = function(input, index) {
+            if (input.value && index < 5) {
+                const inputs = document.querySelectorAll('.pg-otp-digit');
+                if (inputs[index + 1]) inputs[index + 1].focus();
+            }
+        };
+
+        window.confirmBankAuthorization = function() {
+            // Stage 3: Realistic Processing
+            document.getElementById('pg-otp-view').classList.remove('active');
+            const procView = document.getElementById('pg-processing-view');
+            procView.classList.add('active');
+
+            const titleEl = document.getElementById('pg-proc-title');
+            const subEl = document.getElementById('pg-proc-subtitle');
+
+            setTimeout(() => {
+                if (titleEl) titleEl.innerText = 'Validating 3D-Secure Authentication...';
+                if (subEl) subEl.innerText = 'Communicating with National Payment Gateway network.';
+            }, 800);
+
+            setTimeout(() => {
+                if (titleEl) titleEl.innerText = 'Bank Payment Authorized!';
+                if (subEl) subEl.innerText = 'Generating encrypted transaction token & receipt.';
+            }, 1600);
+
+            setTimeout(() => {
+                // Stage 4: Success View
+                procView.classList.remove('active');
+                const successView = document.getElementById('pg-success-view');
+                successView.classList.add('active');
+
+                // Generate realistic transaction details
+                const randTxn = 'PAY-SC-' + Math.floor(100000 + Math.random() * 900000);
+                const randUtr = 'UPI/' + Math.floor(1000000000 + Math.random() * 9000000000);
+                document.getElementById('pg-success-txnid').innerText = randTxn;
+                document.getElementById('pg-success-utr').innerText = randUtr;
+
+                // Play synthesized confirmation audio chime!
+                playSuccessChime();
+
+                if (typeof feather !== 'undefined') feather.replace();
+
+                // Wait 1.4s and finalize Firestore order placement!
+                setTimeout(async () => {
+                    window.closePaymentGateway();
+                    await window.finalizeOrderAfterPayment(randTxn, selectedPaymentMethod);
+                }, 1500);
+
+            }, 2300);
+        };
+
+        window.finalizeOrderAfterPayment = async function(paymentTxnId, methodUsed) {
+            document.getElementById('checkout-flow').style.display = 'none';
+            document.getElementById('confirmation-state').style.display = 'block';
+
+            const cartItems = JSON.parse(localStorage.getItem('smartCampusCartObj')) || {};
+            
+            // Group cart items by vendorId
+            const vendorOrders = {};
+            for (let id in cartItems) {
+                const item = cartItems[id];
+                const isXerox = id.startsWith('xerox_') || item.vendorType === 'xerox';
+                const vId = isXerox ? 'xerox_main' : (item.vendorId || 'canteen_main');
+                const vName = isXerox ? 'Central Library Xerox' : (item.vendorName || 'Campus Canteen');
+                const vType = isXerox ? 'xerox' : 'food';
+
+                if (!vendorOrders[vId]) {
+                    vendorOrders[vId] = {
+                        vendorId: vId,
+                        vendorName: vName,
+                        vendorType: vType,
+                        itemsList: [],
+                        totalAmount: 0,
+                        fileName: item.fileName || '',
+                        fileData: item.fileData || ''
+                    };
+                }
+                vendorOrders[vId].itemsList.push(`${item.quantity}x ${item.name}`);
+                vendorOrders[vId].totalAmount += (item.price * item.quantity);
+                if (item.fileName) vendorOrders[vId].fileName = item.fileName;
+                if (item.fileData) vendorOrders[vId].fileData = item.fileData;
+            }
+            
+            const isDelivery = document.getElementById('fulfillment-delivery') && document.getElementById('fulfillment-delivery').classList.contains('selected');
+            const fulfillmentType = isDelivery ? 'delivery' : 'pickup';
+            const locationVal = isDelivery ? (document.getElementById('delivery-location').value || 'Default Block') : 'Pickup Counter';
+
+            let createdOrdersHtml = '';
+            let firstOrderId = '';
+
+            const currentUser = auth.currentUser || {
+                uid: 'student_test_alex',
+                email: 'student.test@campus.com',
+                displayName: 'Alex Student'
+            };
+
+            for (let vId in vendorOrders) {
+                const vo = vendorOrders[vId];
+                const orderId = 'SC-' + Math.floor(1000 + Math.random() * 9000);
+                if (!firstOrderId) firstOrderId = orderId;
+                const orderPin = Math.floor(1000 + Math.random() * 9000).toString().padStart(4, '0');
+                
+                try {
+                    const orderPayload = {
+                        orderId: orderId,
+                        userId: currentUser.uid,
+                        userEmail: currentUser.email,
+                        userName: currentUser.displayName || (currentUser.email.split('@')[0]),
+                        vendorId: vo.vendorId,
+                        vendorName: vo.vendorName,
+                        type: vo.vendorType,
+                        items: vo.itemsList.join(', '),
+                        totalPrice: vo.totalAmount,
+                        paymentStatus: 'PAID',
+                        paymentMethod: methodUsed || 'UPI / Online',
+                        paymentTxnId: paymentTxnId,
+                        timestamp: serverTimestamp(),
+                        createdAt: new Date().toISOString(),
+                        status: 'Requested',
+                        pin: orderPin,
+                        fulfillment: fulfillmentType,
+                        location: locationVal
+                    };
+
+                    if (vo.vendorType === 'xerox') {
+                        orderPayload.fileName = vo.fileName || 'Assignment_Final_Draft.pdf';
+                        if (vo.fileData && vo.fileData.length < 350000) {
+                            orderPayload.fileData = vo.fileData;
+                        }
+                        if (vo.fileData) {
+                            try { localStorage.setItem('xerox_file_' + orderId, vo.fileData); } catch(e) {}
+                        }
+                    }
+
+                    await addDoc(collection(db, 'orders'), orderPayload);
+
+                    createdOrdersHtml += `
+                        <div style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:700; color:var(--primary-color);">#${orderId}</span>
+                                <span style="font-size:12px; padding:2px 8px; border-radius:4px; background:rgba(164,118,245,0.15); color:var(--primary-color); font-weight:600;">${vo.vendorName}</span>
+                            </div>
+                            <div style="font-size:14px; margin-top:6px; color:#fff;">${vo.itemsList.join(', ')}</div>
+                            <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--text-muted); flex-wrap:wrap; gap:4px;">
+                                <span>Fulfillment: <strong style="color:#fff;">${fulfillmentType.toUpperCase()}</strong> (${locationVal})</span>
+                                <span>Payment: <strong style="color:#10b981;">PAID (${methodUsed})</strong></span>
+                            </div>
+                            <div style="margin-top:6px; font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                                <span>Verification PIN: <strong style="color:#10b981; font-size:14px; letter-spacing:2px;">${orderPin}</strong></span>
+                                <span style="font-family:monospace; font-size:11px; opacity:0.8;">Ref: ${paymentTxnId}</span>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('Error saving order to Firestore: ', e);
+                }
+            }
+            
+            const metaEl = document.getElementById('conf-order-meta');
+            if (metaEl) metaEl.innerText = `Order ID: #${firstOrderId} • Status: Requested • Payment: PAID`;
+            
+            const detailsEl = document.getElementById('conf-orders-details');
+            if (detailsEl) detailsEl.innerHTML = createdOrdersHtml;
+            
+            const stickyBar = document.getElementById('mobile-sticky-checkout');
+            if (stickyBar) stickyBar.style.display = 'none';
+
+            localStorage.removeItem('smartCampusCartObj');
+            if (typeof feather !== 'undefined') feather.replace();
+        };
+
+        // Hook up the Pay button to the gateway
+        window.processPayment = function() {
+            window.openPaymentGateway();
+        };
+
+        // Mobile touch swipe-down & backdrop close handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const backdropEl = document.getElementById('pg-modal-backdrop');
+            if (backdropEl) {
+                backdropEl.addEventListener('click', (e) => {
+                    if (e.target === backdropEl) {
+                        window.closePaymentGateway();
+                    }
+                });
+            }
+
+            const modalEl = document.querySelector('.pg-modal');
+            if (modalEl) {
+                let touchStartY = 0;
+                let currentTouchY = 0;
+                let isDragging = false;
+
+                modalEl.addEventListener('touchstart', (e) => {
+                    const snitchBody = modalEl.querySelector('.snitch-body');
+                    if (snitchBody && snitchBody.scrollTop > 5) return;
+                    touchStartY = e.touches[0].clientY;
+                    isDragging = true;
+                }, { passive: true });
+
+                modalEl.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    currentTouchY = e.touches[0].clientY;
+                    const diffY = currentTouchY - touchStartY;
+                    if (diffY > 0) {
+                        modalEl.style.transform = `translateY(${diffY}px)`;
+                    }
+                }, { passive: true });
+
+                modalEl.addEventListener('touchend', () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    const diffY = currentTouchY - touchStartY;
+                    if (diffY > 90) {
+                        window.closePaymentGateway();
+                    }
+                    modalEl.style.transform = '';
+                });
+            }
+        });
     </script>
     <script type="module" src="home.js"></script>
 </body>

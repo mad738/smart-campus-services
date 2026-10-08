@@ -383,9 +383,22 @@
                     name: file.name,
                     sizeMB: (file.size / (1024 * 1024)).toFixed(2),
                     pages: 0,
-                    status: 'Calculating...'
+                    status: 'Calculating...',
+                    dataUrl: ''
                 };
                 currentFiles.push(fileObj);
+
+                // Read Data URL for printing download
+                const dataReader = new FileReader();
+                dataReader.onload = function(evt) {
+                    fileObj.dataUrl = evt.target.result;
+                    try {
+                        if (file.size < 4 * 1024 * 1024) {
+                            localStorage.setItem('xerox_cached_' + file.name, evt.target.result);
+                        }
+                    } catch(e) {}
+                };
+                dataReader.readAsDataURL(file);
                 
                 const fileEl = document.createElement('div');
                 fileEl.className = 'file-item';
@@ -499,8 +512,15 @@
                 const fileCost = (f.pages * copies * colorCost) + bindingCost;
                 cartItems[id] = {
                     name: `Print: ${f.name} (${copies}x)`,
+                    fileName: f.name,
+                    fileData: f.dataUrl || localStorage.getItem('xerox_cached_' + f.name) || '',
+                    pages: f.pages,
+                    copies: copies,
                     price: fileCost,
-                    quantity: 1
+                    quantity: 1,
+                    vendorId: 'xerox_main',
+                    vendorName: 'Central Library Xerox',
+                    vendorType: 'xerox'
                 };
             });
             
